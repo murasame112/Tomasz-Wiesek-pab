@@ -15,7 +15,7 @@ type Note = {
     id?: number
 }
 
-let mainNote
+const notesArray: any[] = []
 
 app.get('/', function (req: Request, res: Response) {
   res.send('GET Hello World')
@@ -33,7 +33,7 @@ app.post('/note', function (req: Request, res: Response){
     req.body.createDate = date
     //req.body.id = Date.now()
     
-    var note: Note = {
+    const note: Note = {
         title: req.body.title,
         content: req.body.content,
         createDate: req.body.createDate,
@@ -41,15 +41,15 @@ app.post('/note', function (req: Request, res: Response){
         
     }
 
-    let newNote = {
+    /*let newNote = {
         title: req.body.title,
         content: req.body.content,
         createDate: req.body.createDate,
         id: req.body.id
-    }
+    }*/
 
-    mainNote = note
     
+    notesArray.push(note)
     res.sendStatus(200).send('POST Hello World')
 })
 
@@ -57,8 +57,8 @@ app.get('/note/:id', function(req: Request, res: Response){
     
     let noteId = parseInt(req.params.id, 10)
     
-    
-    res.send(mainNote)
+    let foundNote = notesArray.findIndex(note => note.id === noteId)
+    res.send(foundNote)
 })
 
 app.listen(3000)
