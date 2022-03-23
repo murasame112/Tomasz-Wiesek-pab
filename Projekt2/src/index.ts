@@ -51,14 +51,6 @@ app.post('/note', function (req: Request, res: Response){
     const date = new Date()
     const stringDate = date.toISOString()
     const generatedId = Date.now()
-    
-    /*let note: Note = {
-        title: req.body.title,
-        content: req.body.content,
-        //createDate: req.body.createDate,
-        id: req.body.id
-        
-    }*/
 
     let note = new Note(req.body.title, req.body.content, stringDate, generatedId )
 
@@ -66,7 +58,7 @@ app.post('/note', function (req: Request, res: Response){
     console.log(note.content)
     console.log(note.id)
     notesArray.push(note)
-    res.send('POST Hello World')
+    res.sendStatus(201)
 })
 
 app.get('/note/:id', function(req: Request, res: Response){
@@ -78,7 +70,7 @@ app.get('/note/:id', function(req: Request, res: Response){
         return note.id === noteId
     }
     
-    let foundNote = notesArray[foundNoteIndex]/*notesArray.findIndex(note => note.id === noteId)*/
+    const foundNote = notesArray[foundNoteIndex]
     res.send(foundNote)
 })
 
@@ -88,10 +80,43 @@ app.get('/notes', function(req: Request, res: Response){
     
     res.send(notesArray.map(note =>
         `<h1>${note.title}</h1><br>
-        <h5>${note.content}</h5><br>
-        <h5>${note.id}</h5>
+        <p>${note.content}</p><br>
+        <p>${note.id}</p>
         `
       ).join(''))
+})
+
+app.put('/note/:id', function(req: Request, res: Response){
+    
+    const noteId = parseInt(req.params.id, 10)
+    const foundNoteIndex = notesArray.findIndex(searchNote)
+    // predykat - funkcja przeszukująca tablicę
+    function searchNote(note: Note) {
+        return note.id === noteId
+    }
+    
+    
+    const date = new Date()
+    const stringDate = date.toISOString()
+    const generatedId = Date.now()
+
+    let note = new Note(req.body.title, req.body.content, stringDate, generatedId )
+    notesArray[foundNoteIndex] = note
+    res.sendStatus(204)
+})
+
+app.delete('/note/:id', function(req: Request, res: Response){
+    
+    const noteId = parseInt(req.params.id, 10)
+    const foundNoteIndex = notesArray.findIndex(searchNote)
+    // predykat - funkcja przeszukująca tablicę
+    function searchNote(note: Note) {
+        return note.id === noteId
+    }
+    
+    notesArray.splice(foundNoteIndex,1)
+    
+    res.sendStatus(204)
 })
 
 
