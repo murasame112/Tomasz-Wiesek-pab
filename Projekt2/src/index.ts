@@ -71,9 +71,14 @@ app.post('/note', function (req: Request, res: Response){
 
 app.get('/note/:id', function(req: Request, res: Response){
     
-    let noteId = parseInt(req.params.id, 10)
+    const noteId = parseInt(req.params.id, 10)
+    const foundNoteIndex = notesArray.findIndex(searchNote)
+    // predykat - funkcja przeszukująca tablicę
+    function searchNote(note: Note) {
+        return note.id === noteId
+    }
     
-    let foundNote = notesArray.findIndex(note => note.id === noteId)
+    let foundNote = notesArray[foundNoteIndex]/*notesArray.findIndex(note => note.id === noteId)*/
     res.send(foundNote)
 })
 
@@ -89,12 +94,6 @@ app.get('/notes', function(req: Request, res: Response){
       ).join(''))
 })
 
-app.put('/note/:id', function(req: Request, res: Response){
-    
-    let noteId = parseInt(req.params.id, 10)
-    
-    let foundNote = notesArray.findIndex(note => note.id === noteId)
-    res.send(foundNote)
-})
+
 
 app.listen(3000)
