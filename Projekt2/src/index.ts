@@ -17,14 +17,23 @@ type Note = {
 */
 
 
+class Tag{
+    id?: number
+    name: string
+
+    constructor(name: string){
+        this.name = name
+    }
+}
+
 class Note{
     title: string
     content: string
     createDate?: string
-    //tags?: string[]
+    tags?: Tag[]
     id?: number
 
-    constructor(title: string, content: string, createDate?: string, /*tags?: string[],*/ id?: number) {
+    constructor(title: string, content: string, createDate?: string, /*tags?: Tag[],*/ id?: number) {
         this.title = title
         this.content = content
         this.createDate = createDate
