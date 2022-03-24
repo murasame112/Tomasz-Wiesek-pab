@@ -49,7 +49,7 @@ app.post('/', function (req: Request, res: Response) {
 
 // ============== NOTE ENDPOINTS ==============
 
-
+// {"title":"aaaaa","content":"aaaaa content","tags":[["firstTag","secondTag","thirdTag"]]}
 
 app.post('/note', function (req: Request, res: Response){
     
