@@ -26,11 +26,11 @@ class Note{
     tags?: Tag[]
     id?: number
 
-    constructor(title: string, content: string, createDate?: string, /*tags?: Tag[],*/ id?: number) {
+    constructor(title: string, content: string, tags?: Tag[], createDate?: string,  id?: number) {
         this.title = title
         this.content = content
         this.createDate = createDate
-        //this.tags = tags
+        this.tags = tags
         this.id = id
     }
 }
@@ -50,6 +50,7 @@ app.post('/', function (req: Request, res: Response) {
 // ============== NOTE ENDPOINTS ==============
 
 
+
 app.post('/note', function (req: Request, res: Response){
     
     
@@ -57,7 +58,17 @@ app.post('/note', function (req: Request, res: Response){
     const stringDate = date.toISOString()
     const generatedId = Date.now()
 
-    let note = new Note(req.body.title, req.body.content, stringDate, generatedId )
+    for(let i = 0; i < req.body.tags; i++){
+        let actualTag = req.body.tags[i].toLowerCase
+
+        if(tagsArray.some(x => x.name !== actualTag))
+        {
+        let tag = new Tag(actualTag, generatedId)
+        tagsArray.push(tag)
+        }
+    }
+
+    let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId )
 
     console.log(note.title)
     console.log(note.content)
@@ -70,7 +81,7 @@ app.get('/note/:id', function(req: Request, res: Response){
     
     const noteId = parseInt(req.params.id, 10)
     const foundNoteIndex = notesArray.findIndex(searchNote)
-    // predykat - funkcja przeszukująca tablicę
+    
     function searchNote(note: Note) {
         return note.id === noteId
     }
@@ -86,6 +97,7 @@ app.get('/notes', function(req: Request, res: Response){
     res.send(notesArray.map(note =>
         `<h1>${note.title}</h1><br>
         <p>${note.content}</p><br>
+        <p>${note.tags}</p><br>
         <p>${note.id}</p>
         `
       ).join(''))
@@ -95,7 +107,7 @@ app.put('/note/:id', function(req: Request, res: Response){
     
     const noteId = parseInt(req.params.id, 10)
     const foundNoteIndex = notesArray.findIndex(searchNote)
-    // predykat - funkcja przeszukująca tablicę
+    
     function searchNote(note: Note) {
         return note.id === noteId
     }
@@ -105,7 +117,17 @@ app.put('/note/:id', function(req: Request, res: Response){
     const stringDate = date.toISOString()
     const generatedId = Date.now()
 
-    let note = new Note(req.body.title, req.body.content, stringDate, generatedId )
+    for(let i = 0; i < req.body.tags; i++){
+        let actualTag = req.body.tags[i].toLowerCase
+
+        if(tagsArray.some(x => x.name !== actualTag))
+        {
+        let tag = new Tag(actualTag, generatedId)
+        tagsArray.push(tag)
+        }
+    }
+
+    let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId )
     notesArray[foundNoteIndex] = note
     res.sendStatus(204)
 })
@@ -114,7 +136,7 @@ app.delete('/note/:id', function(req: Request, res: Response){
     
     const noteId = parseInt(req.params.id, 10)
     const foundNoteIndex = notesArray.findIndex(searchNote)
-    // predykat - funkcja przeszukująca tablicę
+    
     function searchNote(note: Note) {
         return note.id === noteId
     }
