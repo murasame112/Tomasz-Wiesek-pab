@@ -6,23 +6,16 @@ const app = express()
 
 //app use wskazuje ze uzywamy formatu danych .json
 app.use(express.json())
-/*
-type Note = {
-    title: string
-    content: string
-    createDate?: string
-    tags?: string[]
-    id?: number
-}
-*/
+
 
 
 class Tag{
     id?: number
     name: string
 
-    constructor(name: string){
+    constructor(name: string, id?: number){
         this.name = name
+        this.id = id
     }
 }
 
@@ -43,6 +36,7 @@ class Note{
 }
 
 const notesArray: Note[] = []
+const tagsArray: Tag[] = []
 
 
 app.get('/', function (req: Request, res: Response) {
@@ -52,6 +46,8 @@ app.post('/', function (req: Request, res: Response) {
   console.log(req.body) // e.x. req.body.title 
   res.sendStatus(200).send('POST Hello World')
 })
+
+// ============== NOTE ENDPOINTS ==============
 
 
 app.post('/note', function (req: Request, res: Response){
@@ -129,5 +125,77 @@ app.delete('/note/:id', function(req: Request, res: Response){
 })
 
 
+// ============== TAG ENDPOINTS ==============
+
+app.post('/tag', function (req: Request, res: Response){
+    
+
+    const generatedId = Date.now()
+    const newTagName = req.body.name.toLowerCase()
+
+    if(tagsArray.some(x => x !== newTagName))
+    {
+        let tag = new Tag(newTagName, generatedId)
+        console.log(tag.name)
+        console.log(tag.id)
+        tagsArray.push(tag)
+    }
+
+    res.sendStatus(201)
+})
+
+app.get('/tag/:id', function(req: Request, res: Response){
+    
+    const tagId = parseInt(req.params.id, 10)
+    const foundTagIndex = tagsArray.findIndex(searchTag)
+    
+    function searchTag(tag: Tag) {
+        return tag.id === tagId
+    }
+    
+    const foundTag = tagsArray[foundTagIndex]
+    res.send(foundTag)
+})
+
+app.get('/tags', function(req: Request, res: Response){
+    
+
+    
+    res.send(tagsArray.map(tag =>
+        `<h1>${tag.name}</h1><br>
+        <p>${tag.id}</p>
+        `
+      ).join(''))
+})
+
+app.put('/tag/:id', function(req: Request, res: Response){
+    
+    const tagId = parseInt(req.params.id, 10)
+    const foundTagIndex = tagsArray.findIndex(searchTag)
+    
+    function searchTag(tag: Tag) {
+        return tag.id === tagId
+    }
+    
+    const generatedId = Date.now()
+
+    let tag = new Tag(req.body.naem, generatedId )
+    tagsArray[foundTagIndex] = tag
+    res.sendStatus(204)
+})
+
+app.delete('/tag/:id', function(req: Request, res: Response){
+    
+    const tagId = parseInt(req.params.id, 10)
+    const foundTagIndex = tagsArray.findIndex(searchTag)
+    
+    function searchTag(tag: Tag) {
+        return tag.id === tagId
+    }
+    
+    tagsArray.splice(foundTagIndex,1)
+    
+    res.sendStatus(204)
+})
 
 app.listen(3000)
