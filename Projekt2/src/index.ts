@@ -5,8 +5,9 @@ const app = express()
 //app use wskazuje ze uzywamy formatu danych .json
 app.use(express.json())
 class Tag{
-    id?: number
+    
     name: string
+    id?: number
     constructor(name: string, id?: number){
         this.name = name
         this.id = id
@@ -16,9 +17,9 @@ class Note{
     title: string
     content: string
     createDate?: string
-    tags?: Tag[]
+    tags: Tag[]
     id?: number
-    constructor(title: string, content: string, tags?: Tag[], createDate?: string,  id?: number) {
+    constructor(title: string, content: string, tags: Tag[], createDate?: string,  id?: number) {
         this.title = title
         this.content = content
         this.createDate = createDate
@@ -47,14 +48,18 @@ app.post('/note', function (req: Request, res: Response){
     const date = new Date()
     const stringDate = date.toISOString()
     const generatedId = Date.now()
-    for(let i = 0; i < req.body.tags; i++){
-        let actualTag = req.body.tags[i].toLowerCase
-        if(tagsArray.some(x => x.name !== actualTag))
+
+    for(let i = 0; i < req.body.tags.length; i++){
+        let actualTag = req.body.tags[i]
+        let actualTagName = actualTag.name.toLowerCase()
+        console.log(actualTagName)
+        if (tagsArray.some(e => e.name === actualTagName)==false) 
         {
-        let tag = new Tag(actualTag, generatedId)
+        let tag = new Tag(actualTagName, generatedId)
         tagsArray.push(tag)
         }
     }
+
     let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId )
     console.log(note.title)
     console.log(note.content)
@@ -77,10 +82,12 @@ app.get('/note/:id', function(req: Request, res: Response){
 app.get('/notes', function(req: Request, res: Response){
     
     
-    res.send(notesArray.map(note =>
+    res.send(
+        
+        notesArray.map(note =>
         `<h1>${note.title}</h1><br>
         <p>${note.content}</p><br>
-        <p>${note.tags}</p><br>
+        <p>${note.tags.map(tag => tag.name+", ").join('')}</p><br>
         <p>${note.id}</p>
         `
       ).join(''))
@@ -98,14 +105,18 @@ app.put('/note/:id', function(req: Request, res: Response){
     const date = new Date()
     const stringDate = date.toISOString()
     const generatedId = Date.now()
-    for(let i = 0; i < req.body.tags; i++){
-        let actualTag = req.body.tags[i].toLowerCase
-        if(tagsArray.some(x => x.name !== actualTag))
+
+    for(let i = 0; i < req.body.tags.length; i++){
+        let actualTag = req.body.tags[i]
+        let actualTagName = actualTag.name.toLowerCase()
+        console.log(actualTagName)
+        if (tagsArray.some(e => e.name === actualTagName)==false) 
         {
-        let tag = new Tag(actualTag, generatedId)
+        let tag = new Tag(actualTagName, generatedId)
         tagsArray.push(tag)
         }
     }
+
     let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId )
     notesArray[foundNoteIndex] = note
     res.sendStatus(204)
@@ -123,18 +134,21 @@ app.delete('/note/:id', function(req: Request, res: Response){
     
     res.sendStatus(204)
 })
+
 // ============== TAG ENDPOINTS ==============
+
 app.post('/tag', function (req: Request, res: Response){
     
     const generatedId = Date.now()
     const newTagName = req.body.name.toLowerCase()
-    if(tagsArray.some(x => x !== newTagName))
+    if (tagsArray.some(e => e.name === newTagName)==false) 
     {
         let tag = new Tag(newTagName, generatedId)
         console.log(tag.name)
         console.log(tag.id)
         tagsArray.push(tag)
     }
+    
     res.sendStatus(201)
 })
 app.get('/tag/:id', function(req: Request, res: Response){
