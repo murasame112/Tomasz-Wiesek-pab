@@ -1,6 +1,7 @@
 //importowanie biblioteki express (a takze Request i Response, które wskazują typy zmiennych)
 import express from 'express'
 import {Request, Response} from 'express'
+import fs from 'fs';
 const app = express()
 //app use wskazuje ze uzywamy formatu danych .json
 app.use(express.json())
@@ -27,8 +28,20 @@ class Note{
         this.id = id
     }
 }
+
 const notesArray: Note[] = []
 const tagsArray: Tag[] = []
+const filePath = 'src/data.json'
+
+function readFileWithPromise(file: string) {
+    return fs.promises.readFile(file, 'utf8')
+}
+
+function saveFileWithPromise(storeFile: string, dataToSave: string){
+   
+    return fs.promises.writeFile(storeFile, dataToSave);
+}
+
 app.get('/', function (req: Request, res: Response) {
   res.send('GET Hello World')
 })
@@ -52,7 +65,6 @@ app.post('/note', function (req: Request, res: Response){
     for(let i = 0; i < req.body.tags.length; i++){
         let actualTag = req.body.tags[i]
         let actualTagName = actualTag.name.toLowerCase()
-        console.log(actualTagName)
         if (tagsArray.some(e => e.name === actualTagName)==false) 
         {
         let tag = new Tag(actualTagName, generatedId)
@@ -61,10 +73,15 @@ app.post('/note', function (req: Request, res: Response){
     }
 
     let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId )
-    console.log(note.title)
-    console.log(note.content)
-    console.log(note.id)
+    console.log(req.body)
+
     notesArray.push(note)
+    
+    const data = JSON.stringify(req.body)
+    const dataPromise = saveFileWithPromise(filePath, data)
+
+    
+    dataPromise.then(data => console.log('data saved'))
     res.sendStatus(201)
 })
 app.get('/note/:id', function(req: Request, res: Response){
@@ -81,6 +98,8 @@ app.get('/note/:id', function(req: Request, res: Response){
 })
 app.get('/notes', function(req: Request, res: Response){
     
+    const dataPromise = readFileWithPromise(filePath)
+    dataPromise.then(data => console.log('from promise', data))
     
     res.send(
         
