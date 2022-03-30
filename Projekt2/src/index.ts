@@ -21,17 +21,26 @@ class Note{
     createDate?: string
     tags: Tag[]
     id?: number
-    constructor(title: string, content: string, tags: Tag[], createDate?: string,  id?: number) {
+    username?: string
+
+    constructor(title: string, content: string, tags: Tag[], createDate?: string,  id?: number, username?: string) {
         this.title = title
         this.content = content
         this.createDate = createDate
         this.tags = tags
         this.id = id
+        this.username = username
     }
 }
-// {"title":"aaaaa","content":"aaaaa content","tags":[["firstTag","secondTag","thirdTag"]]}
+// {"title":"aaa","content":"aaaaa content","tags":[{"name":"firstTag"},{"name":"secondTag"},{"name":"thirdTagggg"}]}
+// {"login":"admin135","password":"adminP"}
+
 // header authorization i wartosc Bearer skopiowany_token
 // w json każdemu użytkownikowi przypisywać jego notatki (po id?)
+
+// kazdej notatce przypisuje autora, let login = JSON.parse(payload)
+
+
 /*
 const authData = req.headers.authorization
 const token = authData?.split(' ')[1] ??''
@@ -42,7 +51,8 @@ const notesArray: Note[] = []
 const tagsArray: Tag[] = []
 const filePath = 'src/data.json'
 
-
+let login: string = ''
+let password: string = ''
 
 function readFileWithPromise(file: string) {
     return fs.promises.readFile(file, 'utf8')
@@ -70,10 +80,8 @@ app.post('/login', function (req: Request, res: Response){
     userLogin = req.body.login
     userPassword = req.body.password
     const token = jwt.sign(userLogin, userPassword)
-    
-    const login = userLogin
-    const password = userPassword
-
+    login = userLogin
+    password = userPassword
     res.status(201).send(token)
 })
 
@@ -84,12 +92,14 @@ app.post('/login', function (req: Request, res: Response){
 
 
 app.post('/note', function (req: Request, res: Response){
-
-    
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ??''
+    const payload = jwt.verify(token, password)
+    //let login = JSON.parse(payload)
     const date = new Date()
     const stringDate = date.toISOString()
     const generatedId = Date.now()
-
+    const username = login
     for(let i = 0; i < req.body.tags.length; i++){
         let actualTag = req.body.tags[i]
         let actualTagName = actualTag.name.toLowerCase()
@@ -101,7 +111,7 @@ app.post('/note', function (req: Request, res: Response){
         }
     }
 
-    let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId )
+    let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId, username )
     console.log(req.body)
 
     notesArray.push(note)
@@ -115,7 +125,10 @@ app.post('/note', function (req: Request, res: Response){
     res.sendStatus(201)
 })
 app.get('/note/:id', function(req: Request, res: Response){
-    
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ??''
+    const payload = jwt.verify(token, password)
+
     const noteId = parseInt(req.params.id, 10)
     const foundNoteIndex = notesArray.findIndex(searchNote)
     
@@ -127,7 +140,10 @@ app.get('/note/:id', function(req: Request, res: Response){
     res.send(foundNote)
 })
 app.get('/notes', function(req: Request, res: Response){
-    
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ??''
+    const payload = jwt.verify(token, password)
+
     //const dataPromise = readFileWithPromise(filePath)
     //dataPromise.then(data => console.log('from promise', data))
     
@@ -138,11 +154,15 @@ app.get('/notes', function(req: Request, res: Response){
         <p>${note.content}</p><br>
         <p>${note.tags.map(tag => tag.name+", ").join('')}</p><br>
         <p>${note.id}</p>
+        <p>${note.username}</p>
         `
       ).join(''))
 })
 app.put('/note/:id', function(req: Request, res: Response){
-    
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ??''
+    const payload = jwt.verify(token, password)
+
     const noteId = parseInt(req.params.id, 10)
     const foundNoteIndex = notesArray.findIndex(searchNote)
     
@@ -154,6 +174,7 @@ app.put('/note/:id', function(req: Request, res: Response){
     const date = new Date()
     const stringDate = date.toISOString()
     const generatedId = Date.now()
+    const username = login
 
     for(let i = 0; i < req.body.tags.length; i++){
         let actualTag = req.body.tags[i]
@@ -166,12 +187,15 @@ app.put('/note/:id', function(req: Request, res: Response){
         }
     }
 
-    let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId )
+    let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId, username)
     notesArray[foundNoteIndex] = note
     res.sendStatus(204)
 })
 app.delete('/note/:id', function(req: Request, res: Response){
-    
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ??''
+    const payload = jwt.verify(token, password)
+
     const noteId = parseInt(req.params.id, 10)
     const foundNoteIndex = notesArray.findIndex(searchNote)
     
@@ -187,7 +211,11 @@ app.delete('/note/:id', function(req: Request, res: Response){
 // ============== TAG ENDPOINTS ==============
 
 app.post('/tag', function (req: Request, res: Response){
-    
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ??''
+    const payload = jwt.verify(token, password)
+
+
     const generatedId = Date.now()
     const newTagName = req.body.name.toLowerCase()
     if (tagsArray.some(e => e.name === newTagName)==false) 
@@ -201,7 +229,12 @@ app.post('/tag', function (req: Request, res: Response){
     res.sendStatus(201)
 })
 app.get('/tag/:id', function(req: Request, res: Response){
-    
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ??''
+    const payload = jwt.verify(token, password)
+
+
+
     const tagId = parseInt(req.params.id, 10)
     const foundTagIndex = tagsArray.findIndex(searchTag)
     
@@ -213,7 +246,11 @@ app.get('/tag/:id', function(req: Request, res: Response){
     res.send(foundTag)
 })
 app.get('/tags', function(req: Request, res: Response){
-    
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ??''
+    const payload = jwt.verify(token, password)
+
+
     
     res.send(tagsArray.map(tag =>
         `<h1>${tag.name}</h1><br>
@@ -222,7 +259,12 @@ app.get('/tags', function(req: Request, res: Response){
       ).join(''))
 })
 app.put('/tag/:id', function(req: Request, res: Response){
-    
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ??''
+    const payload = jwt.verify(token, password)
+
+
+
     const tagId = parseInt(req.params.id, 10)
     const foundTagIndex = tagsArray.findIndex(searchTag)
     
@@ -236,7 +278,12 @@ app.put('/tag/:id', function(req: Request, res: Response){
     res.sendStatus(204)
 })
 app.delete('/tag/:id', function(req: Request, res: Response){
-    
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ??''
+    const payload = jwt.verify(token, password)
+
+
+
     const tagId = parseInt(req.params.id, 10)
     const foundTagIndex = tagsArray.findIndex(searchTag)
     
