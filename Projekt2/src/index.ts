@@ -29,6 +29,14 @@ class Note{
     }
 }
 
+// header authorization i wartosc Bearer skopiowany_token
+//
+/*
+const authData = req.headers.authorization
+const token = authData?.split(' ')[1] ??''
+const payload = jwt.verify(token, secret)
+*/
+
 const notesArray: Note[] = []
 const tagsArray: Tag[] = []
 const filePath = 'src/data.json'
