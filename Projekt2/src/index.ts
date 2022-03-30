@@ -1,7 +1,8 @@
 //importowanie biblioteki express (a takze Request i Response, które wskazują typy zmiennych)
 import express from 'express'
 import {Request, Response} from 'express'
-import fs from 'fs';
+import fs from 'fs'
+import jwt from 'jsonwebtoken'
 const app = express()
 //app use wskazuje ze uzywamy formatu danych .json
 app.use(express.json())
@@ -28,9 +29,9 @@ class Note{
         this.id = id
     }
 }
-
+// {"title":"aaaaa","content":"aaaaa content","tags":[["firstTag","secondTag","thirdTag"]]}
 // header authorization i wartosc Bearer skopiowany_token
-//
+// w json każdemu użytkownikowi przypisywać jego notatki (po id?)
 /*
 const authData = req.headers.authorization
 const token = authData?.split(' ')[1] ??''
@@ -40,6 +41,8 @@ const payload = jwt.verify(token, secret)
 const notesArray: Note[] = []
 const tagsArray: Tag[] = []
 const filePath = 'src/data.json'
+
+
 
 function readFileWithPromise(file: string) {
     return fs.promises.readFile(file, 'utf8')
@@ -58,10 +61,27 @@ app.post('/', function (req: Request, res: Response) {
   res.sendStatus(200).send('POST Hello World')
 })
 
+// ============== LOGIN ENDPOINTS ==============
+
+app.post('/login', function (req: Request, res: Response){
+    let userLogin: string
+    let userPassword: string
+
+    userLogin = req.body.login
+    userPassword = req.body.password
+    const token = jwt.sign(userLogin, userPassword)
+    
+    const login = userLogin
+    const password = userPassword
+
+    res.status(201).send(token)
+})
+
+
+
+
 // ============== NOTE ENDPOINTS ==============
 
-
-// {"title":"aaaaa","content":"aaaaa content","tags":[["firstTag","secondTag","thirdTag"]]}
 
 app.post('/note', function (req: Request, res: Response){
 
@@ -77,6 +97,7 @@ app.post('/note', function (req: Request, res: Response){
         {
         let tag = new Tag(actualTagName, generatedId)
         tagsArray.push(tag)
+
         }
     }
 
@@ -85,11 +106,12 @@ app.post('/note', function (req: Request, res: Response){
 
     notesArray.push(note)
     
-    const data = JSON.stringify(req.body)
-    const dataPromise = saveFileWithPromise(filePath, data)
+    //const data = JSON.stringify(req.body)
+    //const dataPromise = saveFileWithPromise(filePath, data)
 
     
-    dataPromise.then(data => console.log('data saved'))
+    //dataPromise.then(data => console.log('data saved'))
+    console.log(generatedId)
     res.sendStatus(201)
 })
 app.get('/note/:id', function(req: Request, res: Response){
@@ -106,8 +128,8 @@ app.get('/note/:id', function(req: Request, res: Response){
 })
 app.get('/notes', function(req: Request, res: Response){
     
-    const dataPromise = readFileWithPromise(filePath)
-    dataPromise.then(data => console.log('from promise', data))
+    //const dataPromise = readFileWithPromise(filePath)
+    //dataPromise.then(data => console.log('from promise', data))
     
     res.send(
         
