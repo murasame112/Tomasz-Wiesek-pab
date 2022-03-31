@@ -80,7 +80,7 @@ app.post('/login', function (req: Request, res: Response){
     userLogin = req.body.login
     userPassword = req.body.password
     const token = jwt.sign(userLogin, userPassword)
-    login = userLogin
+    
     password = userPassword
     res.status(201).send(token)
 })
@@ -95,11 +95,14 @@ app.post('/note', function (req: Request, res: Response){
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ??''
     const payload = jwt.verify(token, password)
-    //let login = JSON.parse(payload)
+    let anyLogin = (payload as any)
+    login = (anyLogin as string)
+    console.log(login)
     const date = new Date()
     const stringDate = date.toISOString()
     const generatedId = Date.now()
     const username = login
+
     for(let i = 0; i < req.body.tags.length; i++){
         let actualTag = req.body.tags[i]
         let actualTagName = actualTag.name.toLowerCase()
