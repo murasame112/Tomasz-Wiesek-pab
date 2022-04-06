@@ -1,3 +1,4 @@
+import { Console } from 'console'
 //importowanie biblioteki express (a takze Request i Response, które wskazują typy zmiennych)
 import express from 'express'
 import {Request, Response} from 'express'
@@ -22,26 +23,42 @@ class Note{
     tags: Tag[]
     id?: number
     username?: string
+    visibility?: boolean
+    // private = false, public = true
 
-    constructor(title: string, content: string, tags: Tag[], createDate?: string,  id?: number, username?: string) {
+    constructor(title: string, content: string, tags: Tag[], createDate?: string,  id?: number, username?: string, visibility?: boolean) {
         this.title = title
         this.content = content
         this.createDate = createDate
         this.tags = tags
         this.id = id
         this.username = username
+        if(visibility == null){
+            this.visibility = false
+        }else{
+            this.visibility = visibility
+        }
     }
 }
 // {"title":"aaa","content":"aaaaa content","tags":[{"name":"firstTag"},{"name":"secondTag"},{"name":"thirdTagggg"}]}
 // {"login":"admin135","password":"adminP"}
+// npm install  typescript, express, nodemon, ts-node, @types/node, @types/express, jsonwebtoken, @types/jsonwebtoken
+
+// domyslnie notatki prywante, uzytkownik widzi tylko swoje notatki
+// mozliwosc dodania publicznej notatki
+
 
 // header authorization i wartosc Bearer skopiowany_token
-// w json każdemu użytkownikowi przypisywać jego notatki (po id?)
 
-// kazdej notatce przypisuje autora, let login = JSON.parse(payload)
-
+// osobne pliki na modele
+// osobne pliki na osobne endpointy - jeden na notes, jeden na tags itp
+// moge skorzystac z routingu wbudowanego w express, lub po prostu zrobic samemu (lepiej samemu, ale jakby mi braklo czasu)
 
 /*
+kod do tokenu
+
+const token = jwt.sign(userLogin, userPassword)
+
 const authData = req.headers.authorization
 const token = authData?.split(' ')[1] ??''
 const payload = jwt.verify(token, secret)
@@ -97,7 +114,7 @@ app.post('/note', function (req: Request, res: Response){
     const payload = jwt.verify(token, password)
     let anyLogin = (payload as any)
     login = (anyLogin as string)
-    console.log(login)
+    console.log("user: " + login)
     const date = new Date()
     const stringDate = date.toISOString()
     const generatedId = Date.now()
@@ -114,8 +131,12 @@ app.post('/note', function (req: Request, res: Response){
         }
     }
 
-    let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId, username )
+    
+    
+
+    let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId, username, req.body.visibility )
     console.log(req.body)
+    
 
     notesArray.push(note)
     
@@ -124,7 +145,8 @@ app.post('/note', function (req: Request, res: Response){
 
     
     //dataPromise.then(data => console.log('data saved'))
-    console.log(generatedId)
+
+    console.log("id: " + generatedId)
     res.sendStatus(201)
 })
 app.get('/note/:id', function(req: Request, res: Response){
@@ -153,11 +175,12 @@ app.get('/notes', function(req: Request, res: Response){
     res.send(
         
         notesArray.map(note =>
-        `<h1>${note.title}</h1><br>
-        <p>${note.content}</p><br>
-        <p>${note.tags.map(tag => tag.name+", ").join('')}</p><br>
-        <p>${note.id}</p>
-        <p>${note.username}</p>
+        `<h1>title: ${note.title}</h1><br>
+        <p>content: ${note.content}</p><br>
+        <p>tags: ${note.tags.map(tag => tag.name+", ").join('')}</p><br>
+        <p>id: ${note.id}</p>
+        <p>username: ${note.username}</p>
+        <p>visible: ${note.visibility}</p>
         `
       ).join(''))
 })
