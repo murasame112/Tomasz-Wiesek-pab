@@ -149,6 +149,7 @@ app.post('/note', function (req: Request, res: Response){
     console.log("id: " + generatedId)
     res.sendStatus(201)
 })
+
 app.get('/note/:id', function(req: Request, res: Response){
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ??''
@@ -164,15 +165,38 @@ app.get('/note/:id', function(req: Request, res: Response){
     const foundNote = notesArray[foundNoteIndex]
     res.send(foundNote)
 })
+
 app.get('/notes', function(req: Request, res: Response){
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ??''
     const payload = jwt.verify(token, password)
+    let anyLogin = (payload as any)
+    login = (anyLogin as string)
 
     //const dataPromise = readFileWithPromise(filePath)
     //dataPromise.then(data => console.log('from promise', data))
-    
     res.send(
+    
+
+        notesArray.filter(function(note){
+            if(note.username == login){
+                return note
+            }
+        }).map(note =>
+            
+            `<h1>title: ${note.title}</h1><br>
+            <p>content: ${note.content}</p><br>
+            <p>tags: ${note.tags.map(tag => tag.name+", ").join('')}</p><br>
+            <p>id: ${note.id}</p>
+            <p>username: ${note.username}</p>
+            <p>visible: ${note.visibility}</p>
+            <p>same user as logged user: ${note.username == login}</p>
+
+            `
+        ).join('')   
+    )
+    
+    /*res.send(
         
         notesArray.map(note =>
         `<h1>title: ${note.title}</h1><br>
@@ -182,7 +206,7 @@ app.get('/notes', function(req: Request, res: Response){
         <p>username: ${note.username}</p>
         <p>visible: ${note.visibility}</p>
         `
-      ).join(''))
+      ).join(''))*/
 })
 app.put('/note/:id', function(req: Request, res: Response){
     const authData = req.headers.authorization
