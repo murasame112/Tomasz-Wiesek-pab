@@ -176,6 +176,9 @@ app.get('/notes', function (req: Request, res: Response) {
 
     //const dataPromise = readFileWithPromise(filePath)
     //dataPromise.then(data => console.log('from promise', data))
+
+    
+
     const ret = notesArray.filter(function (note) {
         if ((note.username == login) || (note.visibility == true)) {
             return note
