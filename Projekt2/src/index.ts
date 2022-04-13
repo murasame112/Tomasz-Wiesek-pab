@@ -50,6 +50,10 @@ function saveFileWithPromise(storeFile: string, dataToSave: string) {
     return fs.promises.writeFile(storeFile, dataToSave);
 }
 
+function saveFile(storeFile: string, dataToSave: string){
+    return fs.writeFileSync(storeFile, dataToSave)
+}
+
 app.get('/', function (req: Request, res: Response) {
     res.send('GET Hello World')
 })
@@ -88,5 +92,5 @@ app.put('/tag/:id', tagEndpoints.putTag)
 app.delete('/tag/:id', tagEndpoints.deleteTag)
 
 
-export {notesArray, tagsArray, filePath, login, password, readFileWithPromise, saveFileWithPromise}
+export {notesArray, tagsArray, filePath, login, password, readFileWithPromise, saveFileWithPromise, saveFile}
 app.listen(3000)

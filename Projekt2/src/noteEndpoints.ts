@@ -5,7 +5,7 @@ import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import { Tag } from "./tagModel"
 import { Note } from "./noteModel"
-import {notesArray, tagsArray, password, filePath, readFileWithPromise, saveFileWithPromise} from "./index"
+import {notesArray, tagsArray, password, filePath, readFileWithPromise, saveFileWithPromise, saveFile} from "./index"
 const app = express()
 app.use(express.json())
 
@@ -39,6 +39,7 @@ export function postNote(req: Request, res: Response) {
     notesArray.push(note)
 
     //const data = JSON.stringify(req.body)
+    //saveFile(filePath, data)
     //const dataPromise = saveFileWithPromise(filePath, data)
 
     //dataPromise.then(data => console.log('data saved'))
