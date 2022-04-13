@@ -10,6 +10,7 @@ import { Note } from "./noteModel"
 import * as noteEndpoints from "./noteEndpoints"
 import * as tagEndpoints from "./tagEndpoints"
 
+const config =  fs.readFileSync(__dirname + '/config.json')
 const app = express()
 //app use wskazuje ze uzywamy formatu danych .json
 app.use(express.json())
@@ -19,16 +20,8 @@ app.use(express.json())
 // {"title":"aaa","content":"aaaaa content","tags":[{"name":"firstTag"},{"name":"secondTag"},{"name":"thirdTagggg"}], "visibility":true}
 // {"login":"admin135","password":"adminP"}
 // npm install  typescript, express, nodemon, ts-node, @types/node, @types/express, jsonwebtoken, @types/jsonwebtoken
-
-// domyslnie notatki prywante, uzytkownik widzi tylko swoje notatki
-// mozliwosc dodania publicznej notatki
-
-
 // header authorization i wartosc Bearer skopiowany_token
 
-// osobne pliki na modele
-// osobne pliki na osobne endpointy - jeden na notes, jeden na tags itp
-// moge skorzystac z routingu wbudowanego w express, lub po prostu zrobic samemu (lepiej samemu, ale jakby mi braklo czasu)
 
 /*
 kod do tokenu
