@@ -38,11 +38,11 @@ export function postNote(req: Request, res: Response) {
     let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId, username, req.body.visibility)
     notesArray.push(note)
 
-    //const data = JSON.stringify(req.body)
-    //saveFile(filePath, data)
-    //const dataPromise = saveFileWithPromise(filePath, data)
+    const data = JSON.stringify(req.body)
+    saveFile(filePath, data)
+    const dataPromise = saveFileWithPromise(filePath, data)
 
-    //dataPromise.then(data => console.log('data saved'))
+    dataPromise.then(data => console.log('data saved'))
 
     res.sendStatus(201)
 }
