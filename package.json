@@ -19,6 +19,7 @@
   "homepage": "https://github.com/murasame112/Tomasz-Wiesek-pab#readme",
   "dependencies": {
     "@types/express": "^4.17.13",
+    "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^17.0.23",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",

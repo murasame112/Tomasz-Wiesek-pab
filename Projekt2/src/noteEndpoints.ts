@@ -5,18 +5,22 @@ import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import { Tag } from "./tagModel"
 import { Note } from "./noteModel"
-import {notesArray, tagsArray, password, filePath, readFileWithPromise, saveFileWithPromise, saveFile} from "./index"
+import {notesArray, tagsArray, password, dataFilePath, readFileWithPromise, saveFileWithPromise, saveFile} from "./index"
 const app = express()
 app.use(express.json())
 
 let login: string = ''
-
+const configJson =  JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'))
+const secret = configJson.secret
 
 
 export function postNote(req: Request, res: Response) {
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
-    const payload = jwt.verify(token, password)
+    console.log(token)
+    
+    const payload = jwt.verify(token, secret)
+    console.log(payload)
     let anyLogin = (payload as any)
     login = (anyLogin as string)
     
@@ -25,7 +29,7 @@ export function postNote(req: Request, res: Response) {
     const generatedId = Date.now()
     const username = login
 
-    for (let i = 0; i < req.body.tags.length; i++) {
+    for (let i = 0; i < req.body.tags?.length; i++) {
         let actualTag = req.body.tags[i]
         let actualTagName = actualTag.name.toLowerCase()
         if (tagsArray.some(e => e.name === actualTagName) == false) {
@@ -39,8 +43,8 @@ export function postNote(req: Request, res: Response) {
     notesArray.push(note)
 
     const data = JSON.stringify(req.body)
-    saveFile(filePath, data)
-    const dataPromise = saveFileWithPromise(filePath, data)
+    saveFile(dataFilePath, data)
+    const dataPromise = saveFileWithPromise(dataFilePath, data)
 
     dataPromise.then(data => console.log('data saved'))
 
@@ -50,7 +54,7 @@ export function postNote(req: Request, res: Response) {
 export function getNote(req: Request, res: Response) {
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
-    const payload = jwt.verify(token, password)
+    const payload = jwt.verify(token, secret)
 
     const noteId = parseInt(req.params.id, 10)
     const foundNoteIndex = notesArray.findIndex(searchNote)
@@ -70,7 +74,7 @@ export function getAllNotes (req: Request, res: Response) {
     let anyLogin = (payload as any)
     login = (anyLogin as string)
 
-    //const dataPromise = readFileWithPromise(filePath)
+    //const dataPromise = readFileWithPromise(dataFilePath)
     //dataPromise.then(data => console.log('from promise', data))
 
     

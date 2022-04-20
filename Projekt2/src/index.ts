@@ -5,15 +5,17 @@ import { Request, Response } from 'express'
 import fs from 'fs'
 import jwt from 'jsonwebtoken'
 
+
 import { Tag } from "./tagModel"
 import { Note } from "./noteModel"
 import * as noteEndpoints from "./noteEndpoints"
 import * as tagEndpoints from "./tagEndpoints"
 
-const config =  fs.readFileSync(__dirname + '/config.json')
+
 const app = express()
 //app use wskazuje ze uzywamy formatu danych .json
 app.use(express.json())
+
 
 
 
@@ -21,6 +23,7 @@ app.use(express.json())
 // {"login":"admin135","password":"adminP"}
 // npm install  typescript, express, nodemon, ts-node, @types/node, @types/express, jsonwebtoken, @types/jsonwebtoken
 // header authorization i wartosc Bearer skopiowany_token
+
 
 
 /*
@@ -35,10 +38,17 @@ const payload = jwt.verify(token, secret)
 
 const notesArray: Note[] = []
 const tagsArray: Tag[] = []
-const filePath = 'src/data.json'
 
 
-let login: string = ''
+const configJson =  JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'))
+const secret = configJson.secret
+const dataFilePath = configJson.dataFilePath
+
+
+// dopisywanie zamiast nadpisywania pliku
+
+
+
 let password: string = ''
 
 function readFileWithPromise(file: string) {
@@ -64,12 +74,13 @@ app.post('/', function (req: Request, res: Response) {
 // ============== LOGIN ENDPOINTS ==============
 
 app.post('/login', function (req: Request, res: Response) {
+    
     let userLogin: string
     let userPassword: string
-
+    console.log(configJson.secret)
     userLogin = req.body.login
     userPassword = req.body.password
-    const token = jwt.sign(userLogin, userPassword)
+    const token = jwt.sign(userLogin, secret)
 
     password = userPassword
     res.status(201).send(token)
@@ -92,5 +103,5 @@ app.put('/tag/:id', tagEndpoints.putTag)
 app.delete('/tag/:id', tagEndpoints.deleteTag)
 
 
-export {notesArray, tagsArray, filePath, login, password, readFileWithPromise, saveFileWithPromise, saveFile}
+export {notesArray, tagsArray, dataFilePath, password, readFileWithPromise, saveFileWithPromise, saveFile}
 app.listen(3000)

@@ -5,7 +5,7 @@ import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import { Tag } from "./tagModel"
 import { Note } from "./noteModel"
-import {tagsArray, password, filePath, readFileWithPromise, saveFileWithPromise} from "./index"
+import {tagsArray, password, dataFilePath, readFileWithPromise, saveFileWithPromise} from "./index"
 const app = express()
 app.use(express.json())
 
