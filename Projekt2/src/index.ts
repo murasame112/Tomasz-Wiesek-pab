@@ -4,8 +4,6 @@ import express from 'express'
 import { Request, Response } from 'express'
 import fs from 'fs'
 import jwt from 'jsonwebtoken'
-
-
 import { Tag } from "./tagModel"
 import { Note } from "./noteModel"
 import * as noteEndpoints from "./noteEndpoints"
@@ -21,10 +19,21 @@ app.use(express.json())
 
 // {"title":"aaa","content":"aaaaa content","tags":[{"name":"firstTag"},{"name":"secondTag"},{"name":"thirdTagggg"}], "visibility":true}
 // {"login":"admin135","password":"adminP"}
-// npm install  typescript, express, nodemon, ts-node, @types/node, @types/express, jsonwebtoken, @types/jsonwebtoken
+// npm install  typescript, express, nodemon, ts-node, @types/node, @types/express, jsonwebtoken, @types/jsonwebtoken, mongoose, mongodb
 // header authorization i wartosc Bearer skopiowany_token
 
-
+// dopisywanie zamiast nadpisywania pliku
+//  - append zamiast write, index.ts(71, 75)
+// interfejs DataStorage, DataStorage.ts, noteModel.ts(4), 
+// klasa mongodb, noteMongoModel.ts
+// crud: 
+// - kazdy moze tworzyc nowe konto, edycji moze dokonac zalogowany uzytkownik
+// - Edycji może dokonać zalogowany użytkownik (tylko swoje konto) oraz admin (wszystkie konta)
+// - Usunąć konto może jedynie admin. Usunięcie konta powinno również usunać wszystkie notatki oraz tagi których właścicielem jest usuwany użytkownik.
+// - Pobrać dane użytkownika może użytkownik (własne konto) i admin (wszystkie konta)
+// - Pobrać listę użytkowników może jedynie admin
+// wylogowywanie przez uniewaznienie tokenu
+// udostepnianie notatek wybranemu uzytkownikowi przez podanie loginu/loginow wspolpracownikow
 
 /*
 kod do tokenu
@@ -45,7 +54,7 @@ const secret = configJson.secret
 const dataFilePath = configJson.dataFilePath
 
 
-// dopisywanie zamiast nadpisywania pliku
+
 
 
 
@@ -57,11 +66,11 @@ function readFileWithPromise(file: string) {
 
 function saveFileWithPromise(storeFile: string, dataToSave: string) {
 
-    return fs.promises.writeFile(storeFile, dataToSave);
+    return fs.promises.appendFile(storeFile, dataToSave);
 }
 
 function saveFile(storeFile: string, dataToSave: string){
-    return fs.writeFileSync(storeFile, dataToSave)
+    return fs.appendFileSync(storeFile, dataToSave)
 }
 
 app.get('/', function (req: Request, res: Response) {

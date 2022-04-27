@@ -1,6 +1,7 @@
 import { Tag } from "./tagModel"
+import { DataStorage } from "./DataStorage"
 
-export class Note {
+export class Note implements DataStorage{
     title: string
     content: string
     createDate?: string
