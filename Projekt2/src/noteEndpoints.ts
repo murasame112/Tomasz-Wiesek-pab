@@ -5,7 +5,7 @@ import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import { Tag } from "./tagModel"
 import { Note } from "./noteModel"
-import {notesArray, tagsArray, password, dataFilePath, readFileWithPromise, saveFileWithPromise, saveFile} from "./index"
+import {notesArray, tagsArray,  dataFilePath, readFileWithPromise, saveFileWithPromise, saveFile, readFile} from "./index"
 const app = express()
 app.use(express.json())
 
@@ -17,10 +17,10 @@ const secret = configJson.secret
 export function postNote(req: Request, res: Response) {
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
-    console.log(token)
+    
     
     const payload = jwt.verify(token, secret)
-    console.log(payload)
+    
     let anyLogin = (payload as any)
     login = (anyLogin as string)
     
@@ -41,12 +41,23 @@ export function postNote(req: Request, res: Response) {
 
     let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId, username, req.body.visibility)
     notesArray.push(note)
+    
+    //const dataPromise = readFileWithPromise(dataFilePath)
+    //dataPromise.then(data => console.log('from promise', data))
 
-    const data = JSON.stringify(req.body)
-    saveFile(dataFilePath, data)
-    const dataPromise = saveFileWithPromise(dataFilePath, data)
+    const dataInJson = readFile(dataFilePath)
+    //ponizej kod do sprawdzenia czy plik pusty i zapisania danych - nie dziala
+    // if(dataInJson!=null){
+    // const dataInArray = JSON.parse(dataInJson);
+    // console.log(dataInArray)
+    // dataInArray.push(note)
+    // }
+    // const dataInString = JSON.stringify(note)
+    // saveFile(dataFilePath, dataInString)
+    
+    // const dataPromise = saveFileWithPromise(dataFilePath, data)
 
-    dataPromise.then(data => console.log('data saved'))
+    // dataPromise.then(data => console.log('data saved'))
 
     res.sendStatus(201)
 }
@@ -70,12 +81,11 @@ export function getNote(req: Request, res: Response) {
 export function getAllNotes (req: Request, res: Response) {
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
-    const payload = jwt.verify(token, password)
+    const payload = jwt.verify(token, secret)
     let anyLogin = (payload as any)
     login = (anyLogin as string)
 
-    //const dataPromise = readFileWithPromise(dataFilePath)
-    //dataPromise.then(data => console.log('from promise', data))
+    
 
     
 
@@ -95,6 +105,7 @@ export function getAllNotes (req: Request, res: Response) {
 
         `
     ).join('')
+    
     res.send(ret)
 
 }
@@ -102,7 +113,7 @@ export function getAllNotes (req: Request, res: Response) {
 export function putNote (req: Request, res: Response) {
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
-    const payload = jwt.verify(token, password)
+    const payload = jwt.verify(token, secret)
 
     const noteId = parseInt(req.params.id, 10)
     const foundNoteIndex = notesArray.findIndex(searchNote)
@@ -135,7 +146,7 @@ export function putNote (req: Request, res: Response) {
 export function deleteNote (req: Request, res: Response) {
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
-    const payload = jwt.verify(token, password)
+    const payload = jwt.verify(token, secret)
 
     const noteId = parseInt(req.params.id, 10)
     const foundNoteIndex = notesArray.findIndex(searchNote)

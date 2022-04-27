@@ -5,16 +5,18 @@ import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import { Tag } from "./tagModel"
 import { Note } from "./noteModel"
-import {tagsArray, password, dataFilePath, readFileWithPromise, saveFileWithPromise} from "./index"
+import {tagsArray,  dataFilePath, readFileWithPromise, saveFileWithPromise} from "./index"
 const app = express()
 app.use(express.json())
 
 let login: string = ''
+const configJson =  JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'))
+const secret = configJson.secret
 
 export function postTag (req: Request, res: Response) {
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
-    const payload = jwt.verify(token, password)
+    const payload = jwt.verify(token, secret)
 
 
     const generatedId = Date.now()
@@ -31,7 +33,7 @@ export function postTag (req: Request, res: Response) {
 export function getTag (req: Request, res: Response) {
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
-    const payload = jwt.verify(token, password)
+    const payload = jwt.verify(token, secret)
 
 
 
@@ -48,7 +50,7 @@ export function getTag (req: Request, res: Response) {
 export function getAllTags (req: Request, res: Response) {
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
-    const payload = jwt.verify(token, password)
+    const payload = jwt.verify(token, secret)
 
 
 
@@ -62,7 +64,7 @@ export function getAllTags (req: Request, res: Response) {
 export function putTag (req: Request, res: Response) {
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
-    const payload = jwt.verify(token, password)
+    const payload = jwt.verify(token, secret)
 
 
 
@@ -82,7 +84,7 @@ export function putTag (req: Request, res: Response) {
 export function deleteTag (req: Request, res: Response) {
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
-    const payload = jwt.verify(token, password)
+    const payload = jwt.verify(token, secret)
 
 
 

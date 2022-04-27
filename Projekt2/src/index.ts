@@ -16,15 +16,13 @@ app.use(express.json())
 
 
 
-
+// http://localhost:3000/
 // {"title":"aaa","content":"aaaaa content","tags":[{"name":"firstTag"},{"name":"secondTag"},{"name":"thirdTagggg"}], "visibility":true}
 // {"login":"admin135","password":"adminP"}
 // npm install  typescript, express, nodemon, ts-node, @types/node, @types/express, jsonwebtoken, @types/jsonwebtoken, mongoose, mongodb
 // header authorization i wartosc Bearer skopiowany_token
 
-// dopisywanie zamiast nadpisywania pliku
-//  - append zamiast write, index.ts(71, 75)
-// interfejs DataStorage, DataStorage.ts, noteModel.ts(4), 
+// naprawa dzialania pracy z plikiem data.json, noteEndpoints.ts(49)
 // klasa mongodb, noteMongoModel.ts
 // crud: 
 // - kazdy moze tworzyc nowe konto, edycji moze dokonac zalogowany uzytkownik
@@ -62,6 +60,10 @@ let password: string = ''
 
 function readFileWithPromise(file: string) {
     return fs.promises.readFile(file, 'utf8')
+}
+
+function readFile(file: string) {
+    return fs.readFileSync(file, 'utf8')
 }
 
 function saveFileWithPromise(storeFile: string, dataToSave: string) {
@@ -112,5 +114,5 @@ app.put('/tag/:id', tagEndpoints.putTag)
 app.delete('/tag/:id', tagEndpoints.deleteTag)
 
 
-export {notesArray, tagsArray, dataFilePath, password, readFileWithPromise, saveFileWithPromise, saveFile}
+export {notesArray, tagsArray, dataFilePath, readFileWithPromise, saveFileWithPromise, saveFile, readFile}
 app.listen(3000)
