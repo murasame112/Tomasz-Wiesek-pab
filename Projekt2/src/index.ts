@@ -113,7 +113,7 @@ app.post('/login', function (req: Request, res: Response) {
     }
     saveFile(userFilePath, dataInString)
 
-    
+    console.log("oof")
     res.status(201).send(token)
 })
 

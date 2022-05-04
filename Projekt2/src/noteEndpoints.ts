@@ -1,6 +1,6 @@
 import { Console } from 'console'
 import express from 'express'
-import { Request, Response } from 'express'
+import e, { Request, Response } from 'express'
 import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import { Tag } from "./tagModel"
@@ -44,24 +44,26 @@ export function postNote(req: Request, res: Response) {
     
     //const dataPromise = readFileWithPromise(dataFilePath)
     //dataPromise.then(data => console.log('from promise', data))
+    
+    
     let dataInString
     const dataArray = []
     const dataInJson = readFile(dataFilePath)
     if(dataInJson.length != 0){
-    const dataToArray = JSON.parse(dataInJson);
-    dataArray.push(dataToArray)
-    dataArray.push(note)
-    dataInString = JSON.stringify(dataArray)
+        const dataToArray = JSON.parse(dataInJson);
+        dataArray.push(dataToArray)
+        dataArray.push(note)
+        dataInString = JSON.stringify(dataArray)
     }else{
-    dataInString = JSON.stringify(note)
+        dataInString = JSON.stringify(note)
     }
     saveFile(dataFilePath, dataInString)
-
+    
     
     // const dataPromise = saveFileWithPromise(dataFilePath, data)
 
     // dataPromise.then(data => console.log('data saved'))
-
+    console.log("post notes arr length " + notesArray.length)
     res.sendStatus(201)
 }
 
@@ -88,7 +90,7 @@ export function getAllNotes (req: Request, res: Response) {
     let anyLogin = (payload as any)
     login = (anyLogin as string)
 
-    
+    console.log("notes length " + notesArray.length)
 
     
 
@@ -117,7 +119,7 @@ export function putNote (req: Request, res: Response) {
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
     const payload = jwt.verify(token, secret)
-
+    
     const noteId = parseInt(req.params.id, 10)
     const foundNoteIndex = notesArray.findIndex(searchNote)
 
@@ -134,7 +136,6 @@ export function putNote (req: Request, res: Response) {
     for (let i = 0; i < req.body.tags.length; i++) {
         let actualTag = req.body.tags[i]
         let actualTagName = actualTag.name.toLowerCase()
-        console.log(actualTagName)
         if (tagsArray.some(e => e.name === actualTagName) == false) {
             let tag = new Tag(actualTagName, generatedId)
             tagsArray.push(tag)
@@ -142,8 +143,17 @@ export function putNote (req: Request, res: Response) {
     }
 
     let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId, username)
-    notesArray[foundNoteIndex] = note
-    res.sendStatus(204)
+    let resultInfo:string = ''
+    console.log("payload " + payload)
+    console.log("username " + notesArray[foundNoteIndex].username)
+    if(notesArray[foundNoteIndex].username == payload){
+        notesArray[foundNoteIndex] = note
+        resultInfo = "Done."
+    }else{
+        resultInfo = "You can't edit note that doesn't belong to you."
+    }
+    
+    res.sendStatus(204).send(resultInfo)
 }
 
 export function deleteNote (req: Request, res: Response) {
