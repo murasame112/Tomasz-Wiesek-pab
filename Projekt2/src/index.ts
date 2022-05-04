@@ -22,16 +22,19 @@ app.use(express.json())
 // npm install  typescript, express, nodemon, ts-node, @types/node, @types/express, jsonwebtoken, @types/jsonwebtoken, mongoose, mongodb
 // header authorization i wartosc Bearer skopiowany_token
 
-// naprawa dzialania pracy z plikiem data.json, noteEndpoints.ts(49)
-// klasa mongodb, noteMongoModel.ts
-// crud: 
-// - kazdy moze tworzyc nowe konto, edycji moze dokonac zalogowany uzytkownik
-// - Edycji może dokonać zalogowany użytkownik (tylko swoje konto) oraz admin (wszystkie konta)
-// - Usunąć konto może jedynie admin. Usunięcie konta powinno również usunać wszystkie notatki oraz tagi których właścicielem jest usuwany użytkownik.
-// - Pobrać dane użytkownika może użytkownik (własne konto) i admin (wszystkie konta)
-// - Pobrać listę użytkowników może jedynie admin
-// wylogowywanie przez uniewaznienie tokenu
-// udostepnianie notatek wybranemu uzytkownikowi przez podanie loginu/loginow wspolpracownikow
+
+
+// 1 model konta uzytkownika (admin true/false)
+        // uzytkownicy zapisywani w pliku
+// 2 edytowac notatke po id mozna tylko, jesli payload sie zgadza z username
+//      - admin moze edytowac kazda notatke
+// 3 admin moze usunąć konto
+//      - usunięcie konta usuwa wszystkie notatki
+// 4 admin moze pobrac liste uzytkownikow
+// 5 uzytkownik moze pobrac dane uzytkownika (dla wlasnego konta)
+//      - admin moze dla wszystkich
+// 6 wylogowywanie przez uniewaznienie tokenu
+// 7 udostepnianie notatek wybranemu uzytkownikowi przez podanie loginu/loginow wspolpracownikow
 
 /*
 kod do tokenu
@@ -68,11 +71,11 @@ function readFile(file: string) {
 
 function saveFileWithPromise(storeFile: string, dataToSave: string) {
 
-    return fs.promises.appendFile(storeFile, dataToSave);
+    return fs.promises.writeFile(storeFile, dataToSave);
 }
 
 function saveFile(storeFile: string, dataToSave: string){
-    return fs.appendFileSync(storeFile, dataToSave)
+    return fs.writeFileSync(storeFile, dataToSave)
 }
 
 app.get('/', function (req: Request, res: Response) {

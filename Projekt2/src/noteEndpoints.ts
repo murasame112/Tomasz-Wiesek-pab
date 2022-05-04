@@ -44,16 +44,19 @@ export function postNote(req: Request, res: Response) {
     
     //const dataPromise = readFileWithPromise(dataFilePath)
     //dataPromise.then(data => console.log('from promise', data))
-
+    let dataInString
+    const dataArray = []
     const dataInJson = readFile(dataFilePath)
-    //ponizej kod do sprawdzenia czy plik pusty i zapisania danych - nie dziala
-    // if(dataInJson!=null){
-    // const dataInArray = JSON.parse(dataInJson);
-    // console.log(dataInArray)
-    // dataInArray.push(note)
-    // }
-    // const dataInString = JSON.stringify(note)
-    // saveFile(dataFilePath, dataInString)
+    if(dataInJson.length != 0){
+    const dataToArray = JSON.parse(dataInJson);
+    dataArray.push(dataToArray)
+    dataArray.push(note)
+    dataInString = JSON.stringify(dataArray)
+    }else{
+    dataInString = JSON.stringify(note)
+    }
+    saveFile(dataFilePath, dataInString)
+
     
     // const dataPromise = saveFileWithPromise(dataFilePath, data)
 
