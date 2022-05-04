@@ -1,1 +1,1 @@
-{"dataFilePath":"src/data.json", "secret":"secret"}
+{"dataFilePath":"src/data.json", "secret":"secret", "userFilePath":"src/userData.json"}

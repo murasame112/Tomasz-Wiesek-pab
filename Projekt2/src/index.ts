@@ -5,6 +5,7 @@ import { Request, Response } from 'express'
 import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import { Tag } from "./tagModel"
+import { User } from "./userModel"
 import { Note } from "./noteModel"
 import * as noteEndpoints from "./noteEndpoints"
 import * as tagEndpoints from "./tagEndpoints"
@@ -21,11 +22,11 @@ app.use(express.json())
 // {"login":"admin135","password":"adminP"}
 // npm install  typescript, express, nodemon, ts-node, @types/node, @types/express, jsonwebtoken, @types/jsonwebtoken, mongoose, mongodb
 // header authorization i wartosc Bearer skopiowany_token
+// header content-type, wartosc application/json
 
 
 
-// 1 model konta uzytkownika (admin true/false)
-        // uzytkownicy zapisywani w pliku
+
 // 2 edytowac notatke po id mozna tylko, jesli payload sie zgadza z username
 //      - admin moze edytowac kazda notatke
 // 3 admin moze usunąć konto
@@ -53,7 +54,7 @@ const tagsArray: Tag[] = []
 const configJson =  JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'))
 const secret = configJson.secret
 const dataFilePath = configJson.dataFilePath
-
+const userFilePath = configJson.userFilePath
 
 
 
@@ -91,12 +92,28 @@ app.post('/login', function (req: Request, res: Response) {
     
     let userLogin: string
     let userPassword: string
-    console.log(configJson.secret)
     userLogin = req.body.login
     userPassword = req.body.password
     const token = jwt.sign(userLogin, secret)
-
     password = userPassword
+    const generatedId = Date.now()
+
+    let user = new User(req.body.login, token, generatedId, req.body.admin)
+
+    let dataInString
+    const dataArray = []
+    const dataInJson = readFile(userFilePath)
+    if(dataInJson.length != 0){
+    const dataToArray = JSON.parse(dataInJson);
+    dataArray.push(dataToArray)
+    dataArray.push(user)
+    dataInString = JSON.stringify(dataArray)
+    }else{
+    dataInString = JSON.stringify(user)
+    }
+    saveFile(userFilePath, dataInString)
+
+    
     res.status(201).send(token)
 })
 
