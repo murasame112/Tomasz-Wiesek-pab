@@ -26,10 +26,7 @@ app.use(express.json())
 
 
 
-
-// 2 edytowac notatke po id mozna tylko, jesli payload sie zgadza z username
-//      - admin moze edytowac kazda notatke
-// 3 admin moze usunąć konto
+// 3 admin moze usunąć konto uzytkownika
 //      - usunięcie konta usuwa wszystkie notatki
 // 4 admin moze pobrac liste uzytkownikow
 // 5 uzytkownik moze pobrac dane uzytkownika (dla wlasnego konta)
@@ -49,6 +46,7 @@ const payload = jwt.verify(token, secret)
 
 const notesArray: Note[] = []
 const tagsArray: Tag[] = []
+const usersArray: User[] = []
 
 
 const configJson =  JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'))
@@ -99,6 +97,7 @@ app.post('/login', function (req: Request, res: Response) {
     const generatedId = Date.now()
 
     let user = new User(req.body.login, token, generatedId, req.body.admin)
+    usersArray.push(user)
 
     let dataInString
     const dataArray = []
@@ -133,5 +132,5 @@ app.put('/tag/:id', tagEndpoints.putTag)
 app.delete('/tag/:id', tagEndpoints.deleteTag)
 
 
-export {notesArray, tagsArray, dataFilePath, readFileWithPromise, saveFileWithPromise, saveFile, readFile}
+export {notesArray, tagsArray, usersArray, dataFilePath, readFileWithPromise, saveFileWithPromise, saveFile, readFile}
 app.listen(3000)

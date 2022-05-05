@@ -5,7 +5,8 @@ import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import { Tag } from "./tagModel"
 import { Note } from "./noteModel"
-import {notesArray, tagsArray,  dataFilePath, readFileWithPromise, saveFileWithPromise, saveFile, readFile} from "./index"
+import { User } from "./userModel"
+import {notesArray, tagsArray, usersArray, dataFilePath, readFileWithPromise, saveFileWithPromise, saveFile, readFile} from "./index"
 const app = express()
 app.use(express.json())
 
@@ -119,12 +120,17 @@ export function putNote (req: Request, res: Response) {
     
     const noteId = parseInt(req.params.id, 10)
     const foundNoteIndex = notesArray.findIndex(searchNote)
-
+    const activeUserIndex = usersArray.findIndex(searchUser)
+    
     function searchNote(note: Note) {
         return note.id === noteId
     }
 
+    function searchUser(user: User){
+        return user.username === payload
+    }
 
+    const loggedUsername = usersArray[activeUserIndex].username
 
     const generatedId = Date.now()
 
@@ -138,10 +144,10 @@ export function putNote (req: Request, res: Response) {
         }
     }
 
-    let note = new Note(req.body.title, req.body.content, req.body.tags, notesArray[foundNoteIndex].createDate, notesArray[foundNoteIndex].id, notesArray[foundNoteIndex].username)
-    let resultInfo:string = ''
+    let note = new Note(req.body.title, req.body.content, req.body.tags, notesArray[foundNoteIndex].createDate, notesArray[foundNoteIndex].id, notesArray[foundNoteIndex].username, req.body.visibility)
+    
 
-    if(notesArray[foundNoteIndex].username == payload){
+    if(notesArray[foundNoteIndex].username == loggedUsername || usersArray[activeUserIndex].admin == true ){
         notesArray[foundNoteIndex] = note
         console.log("Done.")
     }else{
