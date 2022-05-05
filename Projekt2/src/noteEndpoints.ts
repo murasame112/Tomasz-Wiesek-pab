@@ -63,7 +63,7 @@ export function postNote(req: Request, res: Response) {
     // const dataPromise = saveFileWithPromise(dataFilePath, data)
 
     // dataPromise.then(data => console.log('data saved'))
-    console.log("post notes arr length " + notesArray.length)
+    
     res.sendStatus(201)
 }
 
@@ -90,10 +90,7 @@ export function getAllNotes (req: Request, res: Response) {
     let anyLogin = (payload as any)
     login = (anyLogin as string)
 
-    console.log("notes length " + notesArray.length)
-
     
-
     const ret = notesArray.filter(function (note) {
         if ((note.username == login) || (note.visibility == true)) {
             return note
@@ -128,10 +125,9 @@ export function putNote (req: Request, res: Response) {
     }
 
 
-    const date = new Date()
-    const stringDate = date.toISOString()
+
     const generatedId = Date.now()
-    const username = login
+
 
     for (let i = 0; i < req.body.tags.length; i++) {
         let actualTag = req.body.tags[i]
@@ -142,18 +138,17 @@ export function putNote (req: Request, res: Response) {
         }
     }
 
-    let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId, username)
+    let note = new Note(req.body.title, req.body.content, req.body.tags, notesArray[foundNoteIndex].createDate, notesArray[foundNoteIndex].id, notesArray[foundNoteIndex].username)
     let resultInfo:string = ''
-    console.log("payload " + payload)
-    console.log("username " + notesArray[foundNoteIndex].username)
+
     if(notesArray[foundNoteIndex].username == payload){
         notesArray[foundNoteIndex] = note
-        resultInfo = "Done."
+        console.log("Done.")
     }else{
-        resultInfo = "You can't edit note that doesn't belong to you."
+        console.log("You can't edit note that doesn't belong to you.")
     }
     
-    res.sendStatus(204).send(resultInfo)
+    res.sendStatus(204)
 }
 
 export function deleteNote (req: Request, res: Response) {
