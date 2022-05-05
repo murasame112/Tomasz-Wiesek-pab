@@ -26,9 +26,8 @@ app.use(express.json())
 
 
 
-// 3 admin moze usunąć konto uzytkownika
+// 3 admin moze usunąć konto uzytkownika (mam)
 //      - usunięcie konta usuwa wszystkie notatki
-// 4 admin moze pobrac liste uzytkownikow
 // 5 uzytkownik moze pobrac dane uzytkownika (dla wlasnego konta)
 //      - admin moze dla wszystkich
 // 6 wylogowywanie przez uniewaznienie tokenu
@@ -84,7 +83,7 @@ app.post('/', function (req: Request, res: Response) {
     res.sendStatus(200).send('POST Hello World')
 })
 
-// ============== LOGIN ENDPOINTS ==============
+// ============== USER ENDPOINTS ==============
 
 app.post('/login', function (req: Request, res: Response) {
     
@@ -113,6 +112,50 @@ app.post('/login', function (req: Request, res: Response) {
     saveFile(userFilePath, dataInString)
 
     res.status(201).send(token)
+})
+
+app.delete('/deleteUser/:id', function (req: Request, res: Response) {
+    
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ?? ''
+    const payload = jwt.verify(token, secret)
+    const activeUserIndex = usersArray.findIndex(searchUser)
+    function searchUser(user: User){
+        return user.username === payload
+    }
+
+    
+    //foreach -> gdzie username == payload -> usuniecie
+
+    usersArray.splice(activeUserIndex, 1)
+
+    res.sendStatus(204)
+})
+
+app.get('/users', function (req: Request, res: Response) {
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ?? ''
+    const payload = jwt.verify(token, secret)
+
+    const activeUserIndex = usersArray.findIndex(searchUser)
+    function searchUser(user: User){
+        return user.username === payload
+    }
+    let ret= "."
+    if(usersArray[activeUserIndex].admin == true){
+    
+    ret = usersArray.map(user =>
+        `<h1>username: ${user.username}</h1><br>
+        <p>id: ${user.id}</p><br>
+        <p>is admin: ${user.admin}</p>
+        <p>token: ${user.userToken}</p>
+        `
+    ).join('')}
+    else{
+        ret = "<p>you are not an admin</p>"
+    }
+    
+    res.send(ret)
 })
 
 // ============== NOTE ENDPOINTS ==============
