@@ -27,8 +27,6 @@ app.use(express.json())
 
 
 
-// 5 uzytkownik moze pobrac dane uzytkownika (dla wlasnego konta)
-//      - admin moze dla wszystkich
 // 6 wylogowywanie przez uniewaznienie tokenu
 // 7 udostepnianie notatek wybranemu uzytkownikowi przez podanie loginu/loginow wspolpracownikow
 
@@ -183,7 +181,7 @@ app.delete('/deleteUser/:id', function (req: Request, res: Response) {
     res.sendStatus(204)
 })
 
-app.get('/users', function (req: Request, res: Response) {
+app.get('/user', function (req: Request, res: Response) {
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
     const payload = jwt.verify(token, secret)
@@ -203,7 +201,13 @@ app.get('/users', function (req: Request, res: Response) {
         `
     ).join('')}
     else{
-        ret = "<p>you are not an admin</p>"
+        ret = 
+            `<h1>username: ${usersArray[activeUserIndex].username}</h1><br>
+            <p>id: ${usersArray[activeUserIndex].id}</p><br>
+            <p>is admin: ${usersArray[activeUserIndex].admin}</p>
+            <p>token: ${usersArray[activeUserIndex].userToken}</p>
+            `
+        
     }
     
     res.send(ret)
