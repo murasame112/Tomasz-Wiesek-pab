@@ -46,18 +46,31 @@ export function postNote(req: Request, res: Response) {
     //const dataPromise = readFileWithPromise(dataFilePath)
     //dataPromise.then(data => console.log('from promise', data))
     
-    
+
+
     let dataInString
     const dataArray = []
     const dataInJson = readFile(dataFilePath)
+
     if(dataInJson.length != 0){
         const dataToArray = JSON.parse(dataInJson);
-        dataArray.push(dataToArray)
-        dataArray.push(note)
+        if(Array.isArray(dataToArray)){
+
+            for (var i=0;i<dataToArray.length;i++) {
+                 dataArray.push(dataToArray[i])
+            }
+            dataArray.push(note)
+            
+        }else{
+            dataArray.push(dataToArray, note)
+            dataInString = JSON.stringify(dataArray)
+            
+        }
         dataInString = JSON.stringify(dataArray)
     }else{
         dataInString = JSON.stringify(note)
     }
+
     saveFile(dataFilePath, dataInString)
     
     

@@ -9,6 +9,7 @@ import { User } from "./userModel"
 import { Note } from "./noteModel"
 import * as noteEndpoints from "./noteEndpoints"
 import * as tagEndpoints from "./tagEndpoints"
+import { parse } from 'path'
 
 
 const app = express()
@@ -26,8 +27,6 @@ app.use(express.json())
 
 
 
-// 3 admin moze usunąć konto uzytkownika (mam)
-//      - usunięcie konta usuwa wszystkie notatki
 // 5 uzytkownik moze pobrac dane uzytkownika (dla wlasnego konta)
 //      - admin moze dla wszystkich
 // 6 wylogowywanie przez uniewaznienie tokenu
@@ -101,16 +100,27 @@ app.post('/login', function (req: Request, res: Response) {
     let dataInString
     const dataArray = []
     const dataInJson = readFile(userFilePath)
-    if(dataInJson.length != 0){
-    const dataToArray = JSON.parse(dataInJson);
-    dataArray.push(dataToArray)
-    dataArray.push(user)
-    dataInString = JSON.stringify(dataArray)
-    }else{
-    dataInString = JSON.stringify(user)
-    }
-    saveFile(userFilePath, dataInString)
 
+    if(dataInJson.length != 0){
+        const dataToArray = JSON.parse(dataInJson);
+        if(Array.isArray(dataToArray)){
+
+            for (var i=0;i<dataToArray.length;i++) {
+                 dataArray.push(dataToArray[i])
+            }
+            dataArray.push(user)
+            
+        }else{
+            dataArray.push(dataToArray, user)
+            dataInString = JSON.stringify(dataArray)
+            
+        }
+        dataInString = JSON.stringify(dataArray)
+    }else{
+        dataInString = JSON.stringify(user)
+    }
+
+    saveFile(userFilePath, dataInString)
     res.status(201).send(token)
 })
 
@@ -119,13 +129,54 @@ app.delete('/deleteUser/:id', function (req: Request, res: Response) {
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
     const payload = jwt.verify(token, secret)
-    const activeUserIndex = usersArray.findIndex(searchUser)
+    const userId = parseInt(req.params.id, 10)
+    
+    
     function searchUser(user: User){
-        return user.username === payload
+        return user.id === userId
     }
+    const activeUserIndex = usersArray.findIndex(searchUser)
+   
+
+   
 
     
-    //foreach -> gdzie username == payload -> usuniecie
+    
+         
+        const dataInJson = readFile(dataFilePath)
+
+        if(dataInJson.length != 0){
+        const noteData = JSON.parse(dataInJson);
+        if(Array.isArray(noteData)){
+            const forIter = noteData.length
+            for (var i=0;i<forIter;i++) {
+                
+                if(noteData[i].username == usersArray[activeUserIndex].username){
+                    
+                    console.log("-usunieto")
+                    const noteId = noteData[i].id
+                    function searchNote(note: Note) {
+                        return note.id === noteId
+                    }
+                    const foundNoteIndex = notesArray.findIndex(searchNote)
+                    notesArray.splice(foundNoteIndex, 1)
+                }
+               
+            }
+            
+            
+        }else{
+            if(noteData.username == usersArray[activeUserIndex].username){
+                    const noteId = noteData.id
+                    function searchNote(note: Note) {
+                        return note.id === noteId
+                    }
+                    const foundNoteIndex = notesArray.findIndex(searchNote)
+                    notesArray.splice(foundNoteIndex, 1)
+                }
+        }
+    }
+    
 
     usersArray.splice(activeUserIndex, 1)
 
