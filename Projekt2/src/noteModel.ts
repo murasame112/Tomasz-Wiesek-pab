@@ -10,8 +10,8 @@ export class Note implements DataStorage{
     username?: string
     visibility?: boolean
     // private = false, public = true
-
-    constructor(title: string, content: string, tags: Tag[], createDate?: string, id?: number, username?: string, visibility?: boolean) {
+    shared?: string[]
+    constructor(title: string, content: string, tags: Tag[], createDate?: string, id?: number, username?: string, visibility?: boolean, shared?: string[]) {
         this.title = title
         this.content = content
         this.createDate = createDate
@@ -23,5 +23,6 @@ export class Note implements DataStorage{
         } else {
             this.visibility = visibility
         }
+        this.shared = shared
     }
 }

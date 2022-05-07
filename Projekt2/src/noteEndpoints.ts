@@ -40,7 +40,7 @@ export function postNote(req: Request, res: Response) {
         }
     }
 
-    let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId, username, req.body.visibility)
+    let note = new Note(req.body.title, req.body.content, req.body.tags, stringDate, generatedId, username, req.body.visibility, req.body.shared)
     notesArray.push(note)
     
     //const dataPromise = readFileWithPromise(dataFilePath)
@@ -85,7 +85,10 @@ export function getNote(req: Request, res: Response) {
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
     const payload = jwt.verify(token, secret)
+    let anyLogin = (payload as any)
+    login = (anyLogin as string)
 
+    
     const noteId = parseInt(req.params.id, 10)
     const foundNoteIndex = notesArray.findIndex(searchNote)
 
@@ -93,8 +96,23 @@ export function getNote(req: Request, res: Response) {
         return note.id === noteId
     }
 
+    let result = ""
     const foundNote = notesArray[foundNoteIndex]
-    res.send(foundNote)
+    if((foundNote.username == login) || (foundNote.visibility == true) || (foundNote.shared?.includes(login))){
+        foundNote
+        result = 
+            `<h1>title: ${foundNote.title}</h1><br>
+            <p>content: ${foundNote.content}</p><br>
+            <p>tags: ${foundNote.tags.map(tag => tag.name + ", ").join('')}</p><br>
+            <p>id: ${foundNote.id}</p><br>
+            <p>author: ${foundNote.username}</p><br>
+            <p>visible: ${foundNote.visibility}</p><br>            
+            `
+    }else{
+        result = "you don't have access to this note"
+    }
+    
+    res.send(result)
 }
 
 export function getAllNotes (req: Request, res: Response) {
@@ -106,7 +124,7 @@ export function getAllNotes (req: Request, res: Response) {
 
     
     const ret = notesArray.filter(function (note) {
-        if ((note.username == login) || (note.visibility == true)) {
+        if ((note.username == login) || (note.visibility == true) || (note.shared?.includes(login))) {
             return note
         }
     }).map(note =>
@@ -115,7 +133,7 @@ export function getAllNotes (req: Request, res: Response) {
         <p>content: ${note.content}</p><br>
         <p>tags: ${note.tags.map(tag => tag.name + ", ").join('')}</p><br>
         <p>id: ${note.id}</p>
-        <p>username: ${note.username}</p>
+        <p>author: ${note.username}</p>
         <p>visible: ${note.visibility}</p>
         <p>same user as logged user: ${note.username == login}</p>
 
@@ -157,7 +175,39 @@ export function putNote (req: Request, res: Response) {
         }
     }
 
-    let note = new Note(req.body.title, req.body.content, req.body.tags, notesArray[foundNoteIndex].createDate, notesArray[foundNoteIndex].id, notesArray[foundNoteIndex].username, req.body.visibility)
+    let note = new Note(req.body.title, req.body.content, req.body.tags, notesArray[foundNoteIndex].createDate, notesArray[foundNoteIndex].id, notesArray[foundNoteIndex].username, req.body.visibility, notesArray[foundNoteIndex].shared)
+    
+
+    if(notesArray[foundNoteIndex].username == loggedUsername || usersArray[activeUserIndex].admin == true ){
+        notesArray[foundNoteIndex] = note
+        console.log("Done.")
+    }else{
+        console.log("You can't edit note that doesn't belong to you.")
+    }
+    
+    res.sendStatus(204)
+}
+
+export function shareNote (req: Request, res: Response) {
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ?? ''
+    const payload = jwt.verify(token, secret)
+    
+    const noteId = parseInt(req.params.id, 10)
+    const foundNoteIndex = notesArray.findIndex(searchNote)
+    const activeUserIndex = usersArray.findIndex(searchUser)
+    
+    function searchNote(note: Note) {
+        return note.id === noteId
+    }
+
+    function searchUser(user: User){
+        return user.username === payload
+    }
+
+    const loggedUsername = usersArray[activeUserIndex].username
+
+    let note = new Note(notesArray[foundNoteIndex].title, notesArray[foundNoteIndex].content, notesArray[foundNoteIndex].tags, notesArray[foundNoteIndex].createDate, notesArray[foundNoteIndex].id, notesArray[foundNoteIndex].username, notesArray[foundNoteIndex].visibility, req.body.shared)
     
 
     if(notesArray[foundNoteIndex].username == loggedUsername || usersArray[activeUserIndex].admin == true ){
