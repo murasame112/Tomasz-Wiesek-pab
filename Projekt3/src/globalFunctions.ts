@@ -1,0 +1,1 @@
+// tu sa ogolne funkcje, ktorych uzywam wiele razy w roznych plikach, jak np czytanie z pliku
