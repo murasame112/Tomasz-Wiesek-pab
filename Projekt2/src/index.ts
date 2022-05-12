@@ -23,7 +23,7 @@ app.use(express.json())
 // {"title":"aaa","content":"aaaaa content","tags":[{"name":"firstTag"},{"name":"secondTag"},{"name":"thirdTagggg"}], "visibility":true}
 // {"login":"admin135","password":"adminP"}
 // {"shared":["admin130", "admin135", "admin136"]}
-// npm install  typescript, express, nodemon, ts-node, @types/node, @types/express, jsonwebtoken, @types/jsonwebtoken, mongoose, mongodb
+// npm install typescript, express, nodemon, ts-node, @types/node, @types/express, jsonwebtoken, @types/jsonwebtoken, mongoose, mongodb
 // header authorization i wartosc Bearer skopiowany_token
 // header content-type, wartosc application/json
 

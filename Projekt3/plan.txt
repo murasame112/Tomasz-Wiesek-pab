@@ -1,0 +1,45 @@
+Aplikacja - Rejestr pracowników. Pracownicy są przypisani do departamentów, można jednak dokonać przeniesienia pracownika. Można tworzyć konta użytkowników (którzy mają uprawnienia do edytowania pracowników, departamentów itp.) Administratorzy mogą zarządzać kontami użytkowników. Pracownicy mogą przystępować do poszczególnych szkoleń, za które otrzymują punkty. Pracownicy są przydzieleni do grup ze względu na stanowisko (np. "zarząd", "praktykanci", "obsługa klienta", "developerzy" itp.)
+Aplikacja umożliwia podgląd:
+- raportu pracowników, z wyróżnieniem pracowników którzy mają najwięcej (powiedzmy, że np. 150% średniej) punktów.
+- raportu szkoleń odbytych przez poszczególnego pracownika
+- raportu departamentów, z ilością pracowników pracujących w nich
+
+Funkcjonalności:
+1. Pracownik - CRUD obsługi pracowników (dodawanie, usuwanie, edycja itp.)
+2. Departament - CRUD departamentów, usunięcie departamentu możliwe tylko, jeśli nie posiada on pracowników. zmiana departamentu edytuje też departament u pracowników, którzy w nim byli
+3. Użytkownik - CRUD użytkowników, głównie do obsługi dla adminów
+4. Szkolenie - CRUD szkoleń, usunięcie szkolenia nie wpływa na szkolenia odbyte przez pracowników. edycja nazwy szkolenia zmienia nazwę danego szkolenia u pracowników
+5. Grupa - CRUD grup, usunięcie grupy usuwa także tę grupę u każdego pracownika będącego w niej. edycja nazwy zmienia nazwę także u pracowników 
+
+Modele:
+Pracownik:
+	- id
+	- imię
+	- nazwisko
+	- departament (typu Departament)
+	- wykonane szkolenia (tablica typu Szkolenie)
+	- grupa (typu Grupa), pracownik może nie należeć do żadnej grupy
+	- data dołączenia
+	- telefon
+Departament:
+	- id
+	- nazwa
+	- adres
+	- opis
+Użytkownik:
+	- id
+	- nazwa użytkownika
+	- admin (boolean)
+Szkolenie:
+	- id
+	- nazwa
+	- punkty
+Grupa:
+	- id
+	- nazwa
+
+================================== dodatkowe notatki ==================================
+
+sumowanie punktów wszystkich pracowników -> obliczenie z tego średniej -> jeśli jakiś pracownik ma więcej (albo dużo więcej) niż średnia, to jest na zielono
+
+
