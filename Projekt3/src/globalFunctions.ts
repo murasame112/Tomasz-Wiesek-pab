@@ -11,6 +11,7 @@ export function saveFile(storeFile: string, dataToSave: string){
     return fs.writeFileSync(storeFile, dataToSave)
 }
 
+// parametr to req.headers.authorization
 export function authorizeJWT(bearer: string){
     const authData = bearer
     const token = authData?.split(' ')[1] ?? ''
