@@ -17,6 +17,10 @@ app.use(express.json())
 
 // {"login":"user1","password":"password1", "admin":false}
 
+//TODO
+// 1. co w wypadku podania złego id (nie istniejacego) do getObjById lub deleteById. powinno zwracac nulla
+// 2. przetestowac dodawanie i usuwanie uzytkownika
+
 const configJson =  JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'))
 const secret = configJson.secret
 const employeeFilePath = configJson.employeeData

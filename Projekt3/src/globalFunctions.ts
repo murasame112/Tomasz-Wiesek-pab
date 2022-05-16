@@ -53,3 +53,57 @@ export function addObjToFile(obj: object, path: string){
 
     saveFile(path, dataInString)
 }
+
+
+
+
+export function getObjIndexById(path: string, id: number){
+    const dataInJson = readFile(path)
+
+    if(dataInJson.length != 0){
+        const dataToArray = JSON.parse(dataInJson)
+
+        if(Array.isArray(dataToArray)){
+        function searchObj(object){
+            return object.id === id
+        }
+        
+        const objectIndex = dataToArray.findIndex(searchObj)
+        return objectIndex
+        }      
+    }else{
+        return null
+    }
+
+}
+
+export function deleteObjById(path: string, id: number){
+    const dataInJson = readFile(path)
+    let dataInString: string
+    let result: string
+
+    if(dataInJson.length != 0){
+        const dataToArray = JSON.parse(dataInJson)
+
+        if(Array.isArray(dataToArray)){
+            function searchObj(object){
+                return object.id === id
+            }
+        
+            const objectIndex = dataToArray.findIndex(searchObj)
+            dataToArray.splice(objectIndex, 1)
+            dataInString = JSON.stringify(dataToArray)
+            saveFile(path, dataInString)
+            result = 'Record deleted.'
+            return result
+        }else{
+            dataInString = ''
+            saveFile(path, dataInString)
+            result = 'Record deleted.'
+            return result
+            }
+    }else{
+        result = 'File is empty'
+        return result
+    }
+}

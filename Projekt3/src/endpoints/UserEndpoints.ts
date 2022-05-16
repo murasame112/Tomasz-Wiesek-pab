@@ -4,7 +4,7 @@ import e, { Request, Response } from 'express'
 import fs from 'fs'
 import {User} from "../models/UserModel"
 import {userFilePath} from "../index"
-import {signJWT, readFile, saveFile, addObjToFile, authorizeJWT} from "../globalFunctions"
+import {signJWT, readFile, saveFile, addObjToFile, authorizeJWT, getObjIndexById, deleteObjById} from "../globalFunctions"
 
 export function login(req: Request, res: Response) {
 
@@ -27,59 +27,12 @@ export function login(req: Request, res: Response) {
 
 export function deleteUser(req: Request, res: Response){
     authorizeJWT(req.headers.authorization)
+
+    let deleteResult: string
     const userId = parseInt(req.params.id, 10)
-    
-    
-    function searchUser(user: User){
-        return user.id === userId
-    }
-    const activeUserIndex = usersArray.findIndex(searchUser)
-   
+    deleteResult = deleteObjById(userFilePath, userId)
 
-   
-
-    
-    
-         
-        const dataInJson = readFile(dataFilePath)
-
-        if(dataInJson.length != 0){
-        const noteData = JSON.parse(dataInJson);
-        if(Array.isArray(noteData)){
-            const forIter = noteData.length
-            for (var i=0;i<forIter;i++) {
-                
-                if(noteData[i].username == usersArray[activeUserIndex].username){
-                    
-                    console.log("-usunieto")
-                    const noteId = noteData[i].id
-                    function searchNote(note: Note) {
-                        return note.id === noteId
-                    }
-                    const foundNoteIndex = notesArray.findIndex(searchNote)
-                    notesArray.splice(foundNoteIndex, 1)
-                }
-               
-            }
-            
-            
-        }else{
-            if(noteData.username == usersArray[activeUserIndex].username){
-                    const noteId = noteData.id
-                    function searchNote(note: Note) {
-                        return note.id === noteId
-                    }
-                    const foundNoteIndex = notesArray.findIndex(searchNote)
-                    notesArray.splice(foundNoteIndex, 1)
-                }
-        }
-    }
-    
-
-    usersArray.splice(activeUserIndex, 1)
-
-    res.sendStatus(204)
-
+    res.sendStatus(204).send(deleteResult)
 }
 
 export function getUser(req: Request, res: Response){
