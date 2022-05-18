@@ -33,6 +33,72 @@ export function checkIfUsernameExists(username: string, path: string){
     return false
 }
 
+export function checkIfGroupExists(groupName: string, path: string){
+    const dataInJson = readFile(path)
+    let dataInString: string
+    
+
+    if(dataInJson.length != 0){
+        const dataToArray = JSON.parse(dataInJson)
+
+        if(Array.isArray(dataToArray)){
+
+            if(dataToArray.some(g => g.groupName === groupName)){
+                return true
+            }
+        }else{         
+            if(dataToArray.groupName === groupName){
+                return true
+            }       
+        }      
+    }
+    return false
+}
+
+export function checkIfDepartmentExists(departmentName: string, departmentAdress, path: string){
+    const dataInJson = readFile(path)
+    let dataInString: string
+    
+
+    if(dataInJson.length != 0){
+        const dataToArray = JSON.parse(dataInJson)
+
+        if(Array.isArray(dataToArray)){
+
+            if((dataToArray.some(d => d.departmentName === departmentName)) && (dataToArray.some(d => d.adres === departmentAdress))){
+                return true
+            }
+        }else{         
+            if(dataToArray.departmentName === departmentName && dataToArray.adress === departmentAdress){
+                return true
+            }       
+        }      
+    }
+    return false
+}
+
+export function checkIfCourseExists(courseName: string, path: string){
+    const dataInJson = readFile(path)
+    let dataInString: string
+    
+
+    if(dataInJson.length != 0){
+        const dataToArray = JSON.parse(dataInJson)
+
+        if(Array.isArray(dataToArray)){
+
+            if(dataToArray.some(c => c.courseName === courseName)){
+                return true
+            }
+        }else{         
+            if(dataToArray.courseName === courseName){
+                return true
+            }       
+        }      
+    }
+    return false
+}
+
 export function addObjToFile(obj: object, path: string){
     
     let dataInString

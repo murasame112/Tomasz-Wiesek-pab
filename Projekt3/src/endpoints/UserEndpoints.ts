@@ -92,7 +92,6 @@ export function editUser(req: Request, res: Response){
 
         if(user != null){
             let newUser = new User(user.id, req.body.login, user.admin)
-            //addObjToFile(newUser, userFilePath)
             editObj(userFilePath, user.id, newUser)
             result = "Done."
         }else{

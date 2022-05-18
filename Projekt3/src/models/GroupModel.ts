@@ -6,7 +6,6 @@ export class Group{
     constructor(id: number, groupName: string) {
         this.id = id
         this.groupName = groupName
-
     }
 
 }
