@@ -55,6 +55,28 @@ export function checkIfGroupExists(groupName: string, path: string){
     return false
 }
 
+export function checkIfEmployeeExists(groupName: string, path: string){
+    const dataInJson = readFile(path)
+    let dataInString: string
+    
+
+    if(dataInJson.length != 0){
+        const dataToArray = JSON.parse(dataInJson)
+
+        if(Array.isArray(dataToArray)){
+
+            if(dataToArray.some(g => g.groupName === groupName)){
+                return true
+            }
+        }else{         
+            if(dataToArray.groupName === groupName){
+                return true
+            }       
+        }      
+    }
+    return false
+}
+
 export function checkIfDepartmentExists(departmentName: string, departmentAdress: string, path: string){
     const dataInJson = readFile(path)
     let dataInString: string

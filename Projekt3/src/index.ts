@@ -7,7 +7,7 @@ import * as UserEndpoints from "./endpoints/UserEndpoints"
 import * as GroupEndpoints from "./endpoints/GroupEndpoints"
 import * as DepartmentEndpoints from "./endpoints/DepartmentEndpoints"
 import * as CourseEndpoints from "./endpoints/CourseEndpoints"
-
+import * as EmployeeEndpoints from "./endpoints/EmployeeEndpoints"
 
 const app = express()
 app.use(express.json())
@@ -37,6 +37,12 @@ app.use(express.json())
 // 5. edycja nazwy grupy zmienia nazwę także u pracowników
 // 7. usunięcie departamentu możliwe tylko, jeśli nie posiada on pracowników. 
 // 8. zmiana departamentu edytuje też departament u pracowników, którzy w nim byli
+// 9. edycja nazwy szkolenia zmienia nazwę danego szkolenia u pracowników
+
+// 11. crud pracowników
+// 12. raporty
+
+// 13. dodać if(req.body.wartosc == null) { wartoscNowa = wartoscStara } do Editów?
 
 const configJson =  JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'))
 const secret = configJson.secret
@@ -76,6 +82,13 @@ app.post('/course', CourseEndpoints.createCourse)
 app.delete('/course/:id', CourseEndpoints.deleteCourse)
 app.get('/course', CourseEndpoints.getCourse)
 app.put('/course/:id', CourseEndpoints.editCourse) 
+
+// ============== EMPLOYEE ENDPOINTS ==============
+
+app.post('/employee', EmployeeEndpoints.createEmployee)
+app.delete('/employee/:id', EmployeeEndpoints.deleteEmployee)
+app.get('/employee', EmployeeEndpoints.getEmployee)
+app.put('/employee/:id', EmployeeEndpoints.editEmployee) 
 
 
 

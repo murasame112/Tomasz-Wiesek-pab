@@ -2,18 +2,18 @@ import { Group } from "./GroupModel"
 import { Department } from "./DepartmentModel"
 import { Course } from "./CourseModel"
 
-export class Emplyoee{
+export class Employee{
     id: number
     name: string
     surname: string
     department?: Department
-    course?: Course
+    course?: Course[]
     group: Group
     joiningDate: string
     phone: string
 
 
-    constructor(id: number, name: string, surname: string, group: Group, joiningDate: string, phone: string, department?: Department, course?: Course) {
+    constructor(id: number, name: string, surname: string, group: Group, joiningDate: string, phone: string, department?: Department, course?: Course[]) {
         this.id = id
         this.name = name
         this.surname = surname
