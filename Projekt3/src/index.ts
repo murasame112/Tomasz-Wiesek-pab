@@ -18,10 +18,18 @@ app.use(express.json())
 // header content-type, wartosc application/json
 
 // typowe posty do skopiowania
-// user: (one sa juz dodane)
+// user:
 // {"login":"admin","password":"password1", "admin":true}
 // {"login":"user1","password":"password1", "admin":false}
 // {"login":"user2","password":"password1"}
+//
+// department:
+// {"departmentName":"department1", "adress":"gdziekolwiek", "description":"abc"}
+//
+// course:
+// {"courseName":"course1", "points":1}
+
+
 
 //TODO
 

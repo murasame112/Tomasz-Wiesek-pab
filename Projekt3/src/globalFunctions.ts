@@ -55,7 +55,7 @@ export function checkIfGroupExists(groupName: string, path: string){
     return false
 }
 
-export function checkIfDepartmentExists(departmentName: string, departmentAdress, path: string){
+export function checkIfDepartmentExists(departmentName: string, departmentAdress: string, path: string){
     const dataInJson = readFile(path)
     let dataInString: string
     
@@ -245,7 +245,8 @@ export function editObj(path: string, oldId: number, newObj: any){
             result = 'Record edited.'
             return result
         }else{
-            saveFile(path, newObj)
+            dataInString = JSON.stringify(newObj)
+            saveFile(path, dataInString)
             result = 'Record edited.'
             return result
             }

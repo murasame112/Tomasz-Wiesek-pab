@@ -53,13 +53,20 @@ export function getGroup(req: Request, res: Response){
     let result: string
 
 
-    const groups: Group[] = getAllObjs(groupFilePath)
-    result = groups.map(group =>
-        `<h1>Group name: ${group.groupName}</h1><br>
-         <p>id: ${group.id}</p><br>
-            `
-    ).join('')
+    const groups = getAllObjs(groupFilePath)
+   
 
+    if(Array.isArray(groups)){
+        result = groups.map(group =>
+         `<h1>Group name: ${group.groupName}</h1><br>
+         <p>id: ${group.id}</p><br>`
+        ).join('')
+    }else{
+        result = 
+         `<h1>Group name: ${groups.groupName}</h1><br>
+         <p>id: ${groups.id}</p><br>`
+        
+    }
     res.send(result)
 }
 

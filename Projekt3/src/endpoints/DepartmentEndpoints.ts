@@ -54,15 +54,22 @@ export function getDepartment(req: Request, res: Response){
     let result: string
 
 
-    const departments: Department[] = getAllObjs(departmentFilePath)
-    result = departments.map(department =>
-        `<h1>Department name: ${department.departmentName}</h1><br>
+    const departments = getAllObjs(departmentFilePath)
+
+    if(Array.isArray(departments)){
+        result = departments.map(department =>
+         `<h1>Department name: ${department.departmentName}</h1><br>
          <p>id: ${department.id}</p><br>
          <p>adress: ${department.adress}</p><br>
-         <p>id: ${department.description}</p><br>
-            `
-    ).join('')
-
+         <p>id: ${department.description}</p><br>`
+        ).join('')
+    }else{
+        result = 
+         `<h1>Department name: ${departments.departmentName}</h1><br>
+         <p>id: ${departments.id}</p><br>
+         <p>adress: ${departments.adress}</p><br>
+         <p>id: ${departments.description}</p><br>`
+    }
     res.send(result)
 }
 

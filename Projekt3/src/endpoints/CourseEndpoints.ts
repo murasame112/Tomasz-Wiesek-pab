@@ -53,13 +53,22 @@ export function getCourse(req: Request, res: Response){
     let result: string
 
 
-    const courses: Course[] = getAllObjs(courseFilePath)
-    result = courses.map(course =>
+    const courses = getAllObjs(courseFilePath)
+
+    if(Array.isArray(courses)){
+        result = courses.map(course =>
         `<h1>Course name: ${course.courseName}</h1><br>
          <p>id: ${course.id}</p><br>
          <p>points: ${course.points}</p><br>
             `
-    ).join('')
+        ).join('')
+    }else{
+        result = 
+         `<h1>Course name: ${courses.courseName}</h1><br>
+         <p>id: ${courses.id}</p><br>
+         <p>points: ${courses.points}</p><br>`
+    }
+
 
     res.send(result)
 }
