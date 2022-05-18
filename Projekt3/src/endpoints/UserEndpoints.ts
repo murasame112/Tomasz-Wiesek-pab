@@ -5,24 +5,30 @@ import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import {User} from "../models/UserModel"
 import {userFilePath, secret} from "../index"
-import {addObjToFile, deleteObjById, getObjById, getAllObjs, getLoggedId, editObj} from "../globalFunctions"
+import {addObjToFile, deleteObjById, getObjById, getAllObjs, getLoggedId, editObj, checkIfUsernameExists} from "../globalFunctions"
 
 export function login(req: Request, res: Response) {
    
     const userLogin: string = req.body.login
     const userPassword: string = req.body.password
     let isAdmin: boolean = req.body.admin
+    let token
     if(isAdmin == null){
         isAdmin = false
     }
-    const createdPayload = userLogin + '.' + userPassword + '.' + isAdmin
-    const token  =  jwt.sign(createdPayload, secret)
-        
-    const generatedId = Date.now()
-    let user = new User(generatedId, userLogin, req.body.admin)
-    
-    addObjToFile(user, userFilePath)
 
+    const userExists = checkIfUsernameExists(userLogin, userFilePath)
+    if(userExists){
+        token = "User with that username already exists."
+    }else{
+        const createdPayload = userLogin + '.' + userPassword + '.' + isAdmin
+        token  =  jwt.sign(createdPayload, secret)
+            
+        const generatedId = Date.now()
+        let user = new User(generatedId, userLogin, req.body.admin)
+        
+        addObjToFile(user, userFilePath)
+    }
    
     res.status(201).send(token)
 }

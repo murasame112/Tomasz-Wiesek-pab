@@ -14,6 +14,7 @@ app.use(express.json())
 // header content-type, wartosc application/json
 
 // typowe posty do skopiowania
+// user: (one sa juz dodane)
 // {"login":"admin","password":"password1", "admin":true}
 // {"login":"user1","password":"password1", "admin":false}
 // {"login":"user2","password":"password1"}

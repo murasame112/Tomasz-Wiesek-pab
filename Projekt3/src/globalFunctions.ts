@@ -11,6 +11,28 @@ export function saveFile(storeFile: string, dataToSave: string){
     return fs.writeFileSync(storeFile, dataToSave)
 }
 
+export function checkIfUsernameExists(username: string, path: string){
+    const dataInJson = readFile(path)
+    let dataInString: string
+    
+
+    if(dataInJson.length != 0){
+        const dataToArray = JSON.parse(dataInJson)
+
+        if(Array.isArray(dataToArray)){
+
+            if(dataToArray.some(u => u.userName === username)){
+                return true
+            }
+        }else{         
+            if(dataToArray.userName === username){
+                return true
+            }       
+        }      
+    }
+    return false
+}
+
 export function addObjToFile(obj: object, path: string){
     
     let dataInString
