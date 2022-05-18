@@ -11,21 +11,6 @@ export function saveFile(storeFile: string, dataToSave: string){
     return fs.writeFileSync(storeFile, dataToSave)
 }
 
-// parametr to req.headers.authorization
-export function authorizeJWT(bearer: string){
-    const authData = bearer
-    const token = authData?.split(' ')[1] ?? ''
-    
-    
-    const payload = jwt.verify(token, secret)
-    return payload
-}
-
-export function signJWT(payload: string){
-    const token =  jwt.sign(payload, secret)
-    return token
-}
-
 export function addObjToFile(obj: object, path: string){
     
     let dataInString
@@ -54,28 +39,71 @@ export function addObjToFile(obj: object, path: string){
     saveFile(path, dataInString)
 }
 
-
-
-
-export function getObjIndexById(path: string, id: number){
+export function getObjById(path: string, id: number){
     const dataInJson = readFile(path)
 
     if(dataInJson.length != 0){
         const dataToArray = JSON.parse(dataInJson)
 
         if(Array.isArray(dataToArray)){
-        function searchObj(object){
-            return object.id === id
-        }
-        
-        const objectIndex = dataToArray.findIndex(searchObj)
-        return objectIndex
+            function searchObj(object: any){
+                return object.id === id
+            }
+            
+            const objectIndex = dataToArray.findIndex(searchObj)        
+            return dataToArray[objectIndex]
+        }else{
+            return dataToArray
         }      
     }else{
         return null
     }
 
 }
+
+export function getAllObjs(path: string){
+    const dataInJson = readFile(path)
+
+    if(dataInJson.length != 0){
+        const dataToArray = JSON.parse(dataInJson)
+        return dataToArray
+            
+    }else{
+        return null
+    }
+}
+
+export function getLoggedId(path: string, loggedUsername: string){
+    const dataInJson = readFile(path)
+    let dataInString: string
+    
+
+    if(dataInJson.length != 0){
+        const dataToArray = JSON.parse(dataInJson)
+
+        if(Array.isArray(dataToArray)){
+        function searchObj(object: any){
+            return object.userName === loggedUsername
+        }
+        
+        const objectIndex = dataToArray.findIndex(searchObj)
+        
+        
+            return dataToArray[objectIndex].id
+        }else{
+            
+            if(dataToArray.userName == loggedUsername){
+                return dataToArray.id
+            }else{
+                return null
+            }           
+        }      
+    }else{
+        return null
+    }
+}
+
+
 
 export function deleteObjById(path: string, id: number){
     const dataInJson = readFile(path)
@@ -86,7 +114,7 @@ export function deleteObjById(path: string, id: number){
         const dataToArray = JSON.parse(dataInJson)
 
         if(Array.isArray(dataToArray)){
-            function searchObj(object){
+            function searchObj(object: any){
                 return object.id === id
             }
         
@@ -100,6 +128,37 @@ export function deleteObjById(path: string, id: number){
             dataInString = ''
             saveFile(path, dataInString)
             result = 'Record deleted.'
+            return result
+            }
+    }else{
+        result = 'File is empty'
+        return result
+    }
+}
+
+export function editObj(path: string, oldId: number, newObj: any){
+
+    const dataInJson = readFile(path)
+    let dataInString: string
+    let result: string
+
+    if(dataInJson.length != 0){
+        const dataToArray = JSON.parse(dataInJson)
+
+        if(Array.isArray(dataToArray)){
+            function searchObj(object: any){
+                return object.id === oldId
+            }
+        
+            const oldObjectIndex = dataToArray.findIndex(searchObj)
+            dataToArray[oldObjectIndex] = newObj
+            dataInString = JSON.stringify(dataToArray)
+            saveFile(path, dataInString)
+            result = 'Record edited.'
+            return result
+        }else{
+            saveFile(path, newObj)
+            result = 'Record edited.'
             return result
             }
     }else{

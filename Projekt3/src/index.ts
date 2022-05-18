@@ -14,12 +14,13 @@ app.use(express.json())
 // header content-type, wartosc application/json
 
 // typowe posty do skopiowania
-
+// {"login":"admin","password":"password1", "admin":true}
 // {"login":"user1","password":"password1", "admin":false}
+// {"login":"user2","password":"password1"}
 
 //TODO
-// 1. co w wypadku podania złego id (nie istniejacego) do getObjById lub deleteById. powinno zwracac nulla
-// 2. przetestowac dodawanie i usuwanie uzytkownika
+
+// 3. nie mozna utworzyc uzytkownika z istniejacym juz username
 
 const configJson =  JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'))
 const secret = configJson.secret
@@ -35,9 +36,9 @@ export {employeeFilePath, userFilePath, departmentFilePath, courseFilePath, grou
 // ============== USER ENDPOINTS ==============
 
 app.post('/login', UserEndpoints.login)
-app.delete('/user/:id', UserEndpoints.deleteUser) //admin only
-app.get('/user', UserEndpoints.getUser) // user dostaje swoje, adminowi wyswietla wszystkich
-app.put('/user/:id', UserEndpoints.editUser) // admin only
+app.delete('/user/:id', UserEndpoints.deleteUser)
+app.get('/user', UserEndpoints.getUser)
+app.put('/user/:id', UserEndpoints.editUser) 
 
 
 
