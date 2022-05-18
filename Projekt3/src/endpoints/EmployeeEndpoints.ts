@@ -4,7 +4,10 @@ import e, { Request, Response } from 'express'
 import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import {Employee} from "../models/EmployeeModel"
-import {employeeFilePath, secret} from "../index"
+import {Group} from "../models/GroupModel"
+import {Department} from "../models/DepartmentModel"
+import {Course} from "../models/CourseModel"
+import {courseFilePath, departmentFilePath, employeeFilePath, groupFilePath, secret} from "../index"
 import {addObjToFile, deleteObjById, getObjById, getAllObjs, editObj, checkIfEmployeeExists} from "../globalFunctions"
 
 
@@ -18,28 +21,46 @@ export function createEmployee(req: Request, res: Response) {
     const stringDate = date.toISOString()
     const generatedId = Date.now()
 
-    // pobrac do tablicy courses, departments, groups
-    // sprawdzac po kolei, czy podane przeze mnie courses[], departments, groups istnieja (nazwami) (chyba funkcja exists sie nada)
-    // jak nie istnieja, to wyskakuje blad i nie dodaje pracownika
-    // jak istnieja to git, dodaje
-    // odroznic sytuacje gdzie nie istnieja od sytuacji gdy podano null
-    // do courses[] mozna uzyc ponizszego for'a, przerobic
+    const courseArray: Course[] = getAllObjs(courseFilePath)
+    const departmentArray: Department[] = getAllObjs(departmentFilePath)
+    const groupArray: Group[] = getAllObjs(groupFilePath)
 
-    // for (let i = 0; i < req.body.courses.length; i++) {
-    //     let actualCourse = req.body.courses[i]
-    //     let actualTagName = actualTag.name.toLowerCase()
-    //     if (tagsArray.some(e => e.name === actualTagName) == false) {
-    //         let tag = new Tag(actualTagName, generatedId)
-    //         tagsArray.push(tag)
+    const courseNames: String[] = req.body.course
+    const departmentName: string = req.body.departament
+    const groupName: string = req.body.group
 
-    //     }
-    // }
+    let acceptedCourseNames: String []
+    let acceptedDepartmentName: string
+    let acceptedGroupName: string
 
-    const employee = new Employee(generatedId, req.body.name, req.body.surname, req.body.group, stringDate, req.body.phone, req.body.department, req.body.course)
+    for (let i = 0; i < courseNames.length; i++) {
+        let actualCourse = courseNames[i]
+        if (courseArray.some(c => c.courseName === actualCourse) == true) {
+            acceptedCourseNames.push(actualCourse)
+        }else{
+            result+= actualCourse + " cannot be added, since it's not a course. "
+        }
+    }
+
+    if(departmentArray.some(d => d.departmentName === departmentName) == true) {
+        acceptedDepartmentName = departmentName
+    }else{
+        acceptedDepartmentName = ""
+    }
+
+    if(groupArray.some(g => g.groupName === groupName) == true){
+        acceptedGroupName = groupName
+    }else{
+        acceptedGroupName = ""
+    }
+    
+    // szukamy obiektu po accepted name, a potem leci on do nowego pracownika jako obiekt danego typu obiektu
+    // jesli akceptowana grupa pusta, to nie tworzymy studenta, albo dajemy go do jakiejs grupy bazowej czy cos?
+    //const employee = new Employee(generatedId, req.body.name, req.body.surname, acceptedGroup, stringDate, req.body.phone, acceptedDepartment, acceptedCourses)
     
 
 
-    addObjToFile(employee, employeeFilePath)
+    //addObjToFile(employee, employeeFilePath)
     result = "Done."   
     res.status(201).send(result)
 }
