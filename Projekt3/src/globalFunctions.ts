@@ -2,6 +2,9 @@
 import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import { secret } from "./index"
+import {Group} from "./models/GroupModel"
+import {Department} from "./models/DepartmentModel"
+import {Course} from "./models/CourseModel"
 
 export function readFile(file: string) {
     return fs.readFileSync(file, 'utf8')
@@ -213,7 +216,89 @@ export function getLoggedId(path: string, loggedUsername: string){
     }
 }
 
+export function getGrpByName(name: string, path: string){
+    const dataInJson = readFile(path)
+    let dataInString: string
 
+    const dataToArray = JSON.parse(dataInJson)
+
+    if(Array.isArray(dataToArray)){
+        function searchObj(object: Group){
+            return object.groupName === name
+        }
+        
+        const objectIndex = dataToArray.findIndex(searchObj)
+        
+    
+        return dataToArray[objectIndex]
+    }else{
+            
+        if(dataToArray.groupName == name){
+            return dataToArray
+        }else{
+            return null
+        }           
+    }      
+    return null
+}
+
+export function getDepByName(name: string, path: string){
+    const dataInJson = readFile(path)
+    let dataInString: string
+
+    const dataToArray = JSON.parse(dataInJson)
+
+    if(Array.isArray(dataToArray)){
+        function searchObj(object: Department){
+            return object.departmentName === name
+        }
+        
+        const objectIndex = dataToArray.findIndex(searchObj)
+        
+    
+        return dataToArray[objectIndex]
+    }else{
+            
+        if(dataToArray.departmentName == name){
+            return dataToArray
+        }else{
+            return null
+        }           
+    }      
+    return null
+}
+
+export function getCrsByName(names: string[], path: string){
+    const dataInJson = readFile(path)
+    let dataInString: string
+    let actualName: string
+    const dataToArray = JSON.parse(dataInJson)
+    let arrayOfCourses: Course[]
+
+    if(Array.isArray(dataToArray)){
+        function searchObj(object: Course){
+            return object.courseName === actualName
+        }
+        
+        for(let i = 0; i < names.length; i++){
+            actualName = names[i]
+            const objectIndex = dataToArray.findIndex(searchObj)
+            arrayOfCourses.push(dataToArray[objectIndex])
+        }
+        
+        
+    
+        return arrayOfCourses
+    }else{
+            
+        if(dataToArray.courseName == names[0]){
+            return dataToArray
+        }else{
+            return null
+        }           
+    }      
+    return null
+}
 
 export function deleteObjById(path: string, id: number){
     const dataInJson = readFile(path)

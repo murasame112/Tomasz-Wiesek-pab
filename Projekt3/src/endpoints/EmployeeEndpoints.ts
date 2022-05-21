@@ -8,7 +8,7 @@ import {Group} from "../models/GroupModel"
 import {Department} from "../models/DepartmentModel"
 import {Course} from "../models/CourseModel"
 import {courseFilePath, departmentFilePath, employeeFilePath, groupFilePath, secret} from "../index"
-import {addObjToFile, deleteObjById, getObjById, getAllObjs, editObj, checkIfEmployeeExists} from "../globalFunctions"
+import {addObjToFile, deleteObjById, getObjById, getAllObjs, editObj, checkIfEmployeeExists, getGrpByName, getDepByName, getCrsByName} from "../globalFunctions"
 
 
 export function createEmployee(req: Request, res: Response) {
@@ -25,11 +25,11 @@ export function createEmployee(req: Request, res: Response) {
     const departmentArray: Department[] = getAllObjs(departmentFilePath)
     const groupArray: Group[] = getAllObjs(groupFilePath)
 
-    const courseNames: String[] = req.body.course
+    const courseNames: string[] = req.body.course
     const departmentName: string = req.body.departament
     const groupName: string = req.body.group
 
-    let acceptedCourseNames: String []
+    let acceptedCourseNames: string []
     let acceptedDepartmentName: string
     let acceptedGroupName: string
 
@@ -53,15 +53,38 @@ export function createEmployee(req: Request, res: Response) {
     }else{
         acceptedGroupName = ""
     }
-    
-    // szukamy obiektu po accepted name, a potem leci on do nowego pracownika jako obiekt danego typu obiektu
-    // jesli akceptowana grupa pusta, to nie tworzymy studenta, albo dajemy go do jakiejs grupy bazowej czy cos?
-    //const employee = new Employee(generatedId, req.body.name, req.body.surname, acceptedGroup, stringDate, req.body.phone, acceptedDepartment, acceptedCourses)
-    
 
+    let acceptedGroup: Group
+    let acceptedDepartment: Department
+    let acceptedCourses: Course[]
 
-    //addObjToFile(employee, employeeFilePath)
-    result = "Done."   
+    if(acceptedDepartmentName != ""){
+        acceptedDepartment = getDepByName(acceptedDepartmentName, departmentFilePath)
+    }else{
+        acceptedDepartment = null
+    }
+
+    if(acceptedGroupName != ""){
+        acceptedGroup = getGrpByName(acceptedGroupName,  groupFilePath)
+    }else{
+        acceptedGroup = null
+    }
+
+    if(acceptedCourseNames.length > 0){
+        acceptedCourses = getCrsByName(acceptedCourseNames, courseFilePath)
+
+    }else{
+        acceptedCourses = null
+    }
+    
+    if(acceptedGroup == null || acceptedGroupName == null || acceptedGroupName == ""){
+        result += "Employee has to be in a group! "
+    }else{
+        const employee = new Employee(generatedId, req.body.name, req.body.surname, acceptedGroup, stringDate, req.body.phone, acceptedDepartment, acceptedCourses)
+        result += "Done. "
+        addObjToFile(employee, employeeFilePath)
+    }
+    
     res.status(201).send(result)
 }
 
