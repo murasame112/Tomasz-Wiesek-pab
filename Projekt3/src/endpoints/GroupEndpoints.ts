@@ -49,12 +49,9 @@ export function getGroup(req: Request, res: Response){
     const token = authData?.split(' ')[1] ?? ''
     const payload = jwt.verify(token, secret)
 
-
     let result: string
 
-
     const groups = getAllObjs(groupFilePath)
-   
 
     if(Array.isArray(groups)){
         result = groups.map(group =>
