@@ -4,7 +4,8 @@ import e, { Request, Response } from 'express'
 import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import {Department} from "../models/DepartmentModel"
-import {departmentFilePath, secret} from "../index"
+import {Employee} from "../models/EmployeeModel"
+import {departmentFilePath, employeeFilePath, secret} from "../index"
 import {addObjToFile, deleteObjById, getObjById, getAllObjs, editObj, checkIfDepartmentExists} from "../globalFunctions"
 
 export function createDepartment(req: Request, res: Response) {
@@ -93,6 +94,16 @@ export function editDepartment(req: Request, res: Response){
             result = "This department already exists"
         }else{
             editObj(departmentFilePath, department.id, newDepartment)
+
+            const employeesArray: Employee[] = getAllObjs(employeeFilePath)
+
+            for(let i = 0; i < employeesArray.length; i++){
+                if(employeesArray[i].department.departmentName == department.departmentName){
+                    employeesArray[i].department.departmentName = newDepartment.departmentName
+                    editObj(employeeFilePath, employeesArray[i].id, employeesArray[i])
+                }
+                
+            }
             result = "Done."
         }
     }else{

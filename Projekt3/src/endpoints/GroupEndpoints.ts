@@ -4,7 +4,8 @@ import e, { Request, Response } from 'express'
 import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import {Group} from "../models/GroupModel"
-import {groupFilePath, secret} from "../index"
+import {Employee} from "../models/EmployeeModel"
+import {groupFilePath, employeeFilePath, secret} from "../index"
 import {addObjToFile, deleteObjById, getObjById, getAllObjs, editObj, checkIfGroupExists} from "../globalFunctions"
 
 export function createGroup(req: Request, res: Response) {
@@ -86,6 +87,16 @@ export function editGroup(req: Request, res: Response){
             result = "This group already exists"
         }else{
             editObj(groupFilePath, group.id, newGroup)
+
+            const employeesArray: Employee[] = getAllObjs(employeeFilePath)
+
+            for(let i = 0; i < employeesArray.length; i++){
+                if(employeesArray[i].group.groupName == group.groupName){
+                    employeesArray[i].group.groupName = newGroup.groupName
+                    editObj(employeeFilePath, employeesArray[i].id, employeesArray[i])
+                    }
+                
+            }
             result = "Done."
         }
     }else{

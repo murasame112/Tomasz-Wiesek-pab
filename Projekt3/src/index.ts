@@ -38,11 +38,13 @@ app.use(express.json())
 
 //TODO
 
-// 4. usunięcie departamentu usuwa także ten departament u każdego pracownika będącego w niej.
-// 5. edycja nazwy grupy zmienia nazwę także u pracowników
-// 7. usunięcie grupy możliwe tylko, jeśli nie posiada on pracowników. 
-// 8. zmiana departamentu edytuje też departament u pracowników, którzy w nim byli
-// 9. edycja nazwy szkolenia zmienia nazwę danego szkolenia u pracowników
+// 4. usunięcie departamentu usuwa także ten departament u każdego pracownika będącego w nim.
+
+// 7. usunięcie grupy możliwe tylko, jeśli nie posiada ona pracowników. 
+
+// 8.++++ zmiana departamentu edytuje też departament u pracowników, którzy w nim byli
+// 9.++++ edycja nazwy szkolenia zmienia nazwę danego szkolenia u pracowników 
+// 5.++++ edycja nazwy grupy zmienia nazwę także u pracowników
 
 // 12. raporty
 

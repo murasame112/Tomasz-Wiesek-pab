@@ -4,7 +4,8 @@ import e, { Request, Response } from 'express'
 import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import {Course} from "../models/CourseModel"
-import {courseFilePath, secret} from "../index"
+import {Employee} from "../models/EmployeeModel"
+import {courseFilePath, employeeFilePath, secret} from "../index"
 import {addObjToFile, deleteObjById, getObjById, getAllObjs, editObj, checkIfCourseExists} from "../globalFunctions"
 
 export function createCourse(req: Request, res: Response) {
@@ -92,6 +93,18 @@ export function editCourse(req: Request, res: Response){
             result = "This course already exists"
         }else{
             editObj(courseFilePath, course.id, newCourse)
+
+            const employeesArray: Employee[] = getAllObjs(employeeFilePath)
+
+            for(let i = 0; i < employeesArray.length; i++){
+                for(let j = 0; j < employeesArray[i].course.length; j++){
+                    if(employeesArray[i].course[j].courseName == course.courseName){
+                        employeesArray[i].course[j].courseName = newCourse.courseName
+                        editObj(employeeFilePath, employeesArray[i].id, employeesArray[i])
+                    }
+                }
+            }
+            
             result = "Done."
         }
     }else{
