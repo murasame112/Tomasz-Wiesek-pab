@@ -273,7 +273,7 @@ export function getCrsByName(names: string[], path: string){
     let dataInString: string
     let actualName: string
     const dataToArray = JSON.parse(dataInJson)
-    let arrayOfCourses: Course[]
+    let arrayOfCourses: Course[] = []
 
     if(Array.isArray(dataToArray)){
         function searchObj(object: Course){

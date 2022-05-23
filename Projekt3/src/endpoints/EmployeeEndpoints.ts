@@ -16,7 +16,7 @@ export function createEmployee(req: Request, res: Response) {
     const token = authData?.split(' ')[1] ?? ''
     const payload = jwt.verify(token, secret)
 
-    let result: string
+    let result: string = ""
     const date = new Date()
     const stringDate = date.toISOString()
     const generatedId = Date.now()
@@ -26,10 +26,10 @@ export function createEmployee(req: Request, res: Response) {
     const groupArray: Group[] = getAllObjs(groupFilePath)
 
     const courseNames: string[] = req.body.course
-    const departmentName: string = req.body.departament
+    const departmentName: string = req.body.department
     const groupName: string = req.body.group
 
-    let acceptedCourseNames: string []
+    let acceptedCourseNames: string [] = []
     let acceptedDepartmentName: string
     let acceptedGroupName: string
 
@@ -54,30 +54,30 @@ export function createEmployee(req: Request, res: Response) {
         acceptedGroupName = ""
     }
 
-    let acceptedGroup: Group
+    let acceptedGroup: Group  
     let acceptedDepartment: Department
     let acceptedCourses: Course[]
 
     if(acceptedDepartmentName != ""){
         acceptedDepartment = getDepByName(acceptedDepartmentName, departmentFilePath)
     }else{
-        acceptedDepartment = null
+        acceptedDepartment = new Department(generatedId, "", "")
     }
 
     if(acceptedGroupName != ""){
         acceptedGroup = getGrpByName(acceptedGroupName,  groupFilePath)
     }else{
-        acceptedGroup = null
+        acceptedGroup = new Group(generatedId, "")
     }
 
     if(acceptedCourseNames.length > 0){
         acceptedCourses = getCrsByName(acceptedCourseNames, courseFilePath)
 
     }else{
-        acceptedCourses = null
+        acceptedCourses = [] 
     }
     
-    if(acceptedGroup == null || acceptedGroupName == null || acceptedGroupName == ""){
+    if(acceptedGroupName == null || acceptedGroupName == "" || acceptedGroup.groupName == ""){
         result += "Employee has to be in a group! "
     }else{
         const employee = new Employee(generatedId, req.body.name, req.body.surname, acceptedGroup, stringDate, req.body.phone, acceptedDepartment, acceptedCourses)
@@ -112,14 +112,15 @@ export function getEmployee(req: Request, res: Response){
     let result: string
     const employees = getAllObjs(employeeFilePath)
    
+
     if(Array.isArray(employees)){
-        result = employees.map(employee =>
+        result = employees.map((employee: Employee) =>
          `<h1>Employee's name: ${employee.name}</h1><br>
          <p>Employee's surname: ${employee.surname}</p><br>
          <p>id: ${employee.id}</p><br>
-         <p>department: ${employee.departament.departmentName}</p><br>
+         <p>department: ${employee.department?.departmentName}</p><br>
          <p>group: ${employee.group.groupName}</p><br>
-         <p>courses: ${employee.course.map(crs => crs.name + ", ").join('')}</p><br>
+         <p>courses: ${employee.course?.map((crs: Course) => crs.courseName + ", ").join('')}</p><br>
          <p>joining date: ${employee.joiningDate}</p><br>
          <p>phone: ${employee.phone}</p><br>`
         ).join('')
@@ -128,9 +129,9 @@ export function getEmployee(req: Request, res: Response){
          `<h1>Employee's name: ${employees.name}</h1><br>
          <p>Employee's surname: ${employees.surname}</p><br>
          <p>id: ${employees.id}</p><br>
-         <p>department: ${employees.departament.departmentName}</p><br>
+         <p>department: ${employees.department.departmentName}</p><br>
          <p>group: ${employees.group.groupName}</p><br>
-         <p>courses: ${employees.course.map(crs => crs.name + ", ").join('')}</p><br>
+         <p>courses: ${employees.course.map((crs: Course) => crs.courseName + ", ").join('')}</p><br>
          <p>joining date: ${employees.joiningDate}</p><br>
          <p>phone: ${employees.phone}</p><br>`
         
@@ -144,7 +145,7 @@ export function editEmployee(req: Request, res: Response){
     const payload = jwt.verify(token, secret)
 
     const employeeId = parseInt(req.params.id, 10)
-    let result: string
+    let result: string = ""
     
     const employee = getObjById(employeeFilePath, employeeId)
 
@@ -153,10 +154,10 @@ export function editEmployee(req: Request, res: Response){
     const groupArray: Group[] = getAllObjs(groupFilePath)
 
     const courseNames: string[] = req.body.course
-    const departmentName: string = req.body.departament
+    const departmentName: string = req.body.department
     const groupName: string = req.body.group
 
-    let acceptedCourseNames: string []
+    let acceptedCourseNames: string [] = []
     let acceptedDepartmentName: string
     let acceptedGroupName: string
 
@@ -188,7 +189,7 @@ export function editEmployee(req: Request, res: Response){
     if(acceptedDepartmentName != ""){
         acceptedDepartment = getDepByName(acceptedDepartmentName, departmentFilePath)
     }else{
-        acceptedDepartment = null
+        acceptedDepartment = req.body.departament
     }
 
     if(acceptedGroupName != ""){
@@ -201,7 +202,7 @@ export function editEmployee(req: Request, res: Response){
         acceptedCourses = getCrsByName(acceptedCourseNames, courseFilePath)
 
     }else{
-        acceptedCourses = null
+        acceptedCourses = req.body.departament
     }
 
     if(employee != null){
