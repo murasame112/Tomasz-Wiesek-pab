@@ -33,22 +33,21 @@ app.use(express.json())
 // {"groupName":"group1"}
 //
 // employee:
-// {"name":"Arthas", "surname":"Menethil", "group":"group1", "phone":"123456789", "department":"department1", "course":["course1", "course2"]}
+// {"name":"Arthas", "surname":"Menethil", "group":"group1", "phone":"123456789", "course":["course1", "course2"], "department":"department1"}
 
 
 //TODO
 
 // 4.++++ usunięcie departamentu usuwa także ten departament u każdego pracownika będącego w nim.
-
+// 5.++++ edycja nazwy grupy zmienia nazwę także u pracowników
 // 7.++++ usunięcie grupy możliwe tylko, jeśli nie posiada ona pracowników. 
-
 // 8.++++ zmiana departamentu edytuje też departament u pracowników, którzy w nim byli
 // 9.++++ edycja nazwy szkolenia zmienia nazwę danego szkolenia u pracowników 
-// 5.++++ edycja nazwy grupy zmienia nazwę także u pracowników
+
 
 // 12. raporty
 
-// 14. testy 4, 5, 6, 7, 8, 9
+// 14. testy 4, 5, 7, 8, 9
 
 const configJson =  JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'))
 const secret = configJson.secret
@@ -80,6 +79,7 @@ app.put('/group/:id', GroupEndpoints.editGroup)
 app.post('/department', DepartmentEndpoints.createDepartment)
 app.delete('/department/:id', DepartmentEndpoints.deleteDepartment)
 app.get('/department', DepartmentEndpoints.getDepartment)
+app.get('/departmentRaport', DepartmentEndpoints.departmentEmployeeReport)
 app.put('/department/:id', DepartmentEndpoints.editDepartment) 
 
 // ============== COURSE ENDPOINTS ==============

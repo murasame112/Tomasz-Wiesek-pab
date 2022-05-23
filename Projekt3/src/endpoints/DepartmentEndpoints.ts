@@ -88,6 +88,49 @@ export function getDepartment(req: Request, res: Response){
     res.send(result)
 }
 
+export function departmentEmployeeReport(req: Request, res: Response){
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ?? ''
+    const payload = jwt.verify(token, secret)
+
+
+    let result: string = ""
+    let empCounter = 0
+
+    const departments = getAllObjs(departmentFilePath)
+    const employees = getAllObjs(employeeFilePath)
+    
+
+    if(Array.isArray(departments)){
+
+        for(let i = 0; i < departments.length; i++){
+            for(let j = 0; j < employees.length; j++){
+                if(departments[i].departamentName == employees[j].departament.departamentName){
+                    empCounter++
+                } 
+            }
+
+            result = 
+            `<h1>Department name: ${departments[i].departmentName}</h1><br>
+            <p>Employees: ${empCounter}</p><br>
+            `
+        }
+    }else{
+        for(let j = 0; j < employees.length; j++){
+            if(departments.departamentName == employees.departament.departamentName){
+                empCounter++
+            } 
+        }
+
+        result = 
+        `<h1>Department name: ${departments.departmentName}</h1><br>
+        <p>Employees: ${empCounter}</p><br>
+        `
+        
+    }
+    res.send(result)
+}
+
 export function editDepartment(req: Request, res: Response){
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''
