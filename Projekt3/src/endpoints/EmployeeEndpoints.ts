@@ -146,6 +146,28 @@ export function getEmployee(req: Request, res: Response){
     res.send(result)
 }
 
+export function employeeCourseReport(req: Request, res: Response){
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ?? ''
+    const payload = jwt.verify(token, secret)
+
+    const employeeId = parseInt(req.params.id, 10)
+    let result: string
+    let points: number = 0
+    const employee: Employee = getObjById(employeeFilePath, employeeId)
+
+    for(let i = 0; i < employee.course.length; i++){
+        points += employee.course[i].points
+    }
+
+    result = 
+         `<h1>name: ${employee.name}</h1><br>
+         <p>surname: ${employee.surname}</p><br>
+         <h4>courses: </h4> ${employee.course.map((crs: Course) =>"<p>" + crs.courseName + "</p><br>").join('')}
+         <p>points: ${points}</p><br>`
+    res.send(result)
+}
+
 export function editEmployee(req: Request, res: Response){
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''

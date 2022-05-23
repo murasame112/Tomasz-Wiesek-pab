@@ -45,9 +45,10 @@ app.use(express.json())
 // 9.++++ edycja nazwy szkolenia zmienia nazwę danego szkolenia u pracowników 
 
 
-// 12. raporty
+// 12. raporty (zostal tylko raport pracownikow)
 
 // 14. testy 4, 5, 7, 8, 9
+// 15. testy raportów po skonczeniu.
 
 const configJson =  JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'))
 const secret = configJson.secret
@@ -79,7 +80,7 @@ app.put('/group/:id', GroupEndpoints.editGroup)
 app.post('/department', DepartmentEndpoints.createDepartment)
 app.delete('/department/:id', DepartmentEndpoints.deleteDepartment)
 app.get('/department', DepartmentEndpoints.getDepartment)
-app.get('/departmentRaport', DepartmentEndpoints.departmentEmployeeReport)
+app.get('/departmentReport', DepartmentEndpoints.departmentEmployeeReport)
 app.put('/department/:id', DepartmentEndpoints.editDepartment) 
 
 // ============== COURSE ENDPOINTS ==============
@@ -94,6 +95,7 @@ app.put('/course/:id', CourseEndpoints.editCourse)
 app.post('/employee', EmployeeEndpoints.createEmployee)
 app.delete('/employee/:id', EmployeeEndpoints.deleteEmployee)
 app.get('/employee', EmployeeEndpoints.getEmployee)
+app.get('/employeeCourses/:id', EmployeeEndpoints.employeeCourseReport)
 app.put('/employee/:id', EmployeeEndpoints.editEmployee) 
 
 
