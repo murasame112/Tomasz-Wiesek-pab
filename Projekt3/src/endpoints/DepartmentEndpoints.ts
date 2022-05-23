@@ -95,14 +95,14 @@ export function departmentEmployeeReport(req: Request, res: Response){
 
 
     let result: string = ""
-    let empCounter = 0
+    
 
     const departments = getAllObjs(departmentFilePath)
     const employees = getAllObjs(employeeFilePath)
     
 
     if(Array.isArray(departments)){
-
+        let empCounter = 0
         for(let i = 0; i < departments.length; i++){
             for(let j = 0; j < employees.length; j++){
                 if(departments[i].departamentName == employees[j].departament.departamentName){
@@ -116,7 +116,9 @@ export function departmentEmployeeReport(req: Request, res: Response){
             `
         }
     }else{
+        let empCounter = 0
         for(let j = 0; j < employees.length; j++){
+            
             if(departments.departamentName == employees.departament.departamentName){
                 empCounter++
             } 
