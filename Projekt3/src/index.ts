@@ -28,25 +28,29 @@ app.use(express.json())
 //
 // course:
 // {"courseName":"course1", "points":1}
-
+//
+// group:
+// {"groupName":"group1"}
+//
+// employee:
+// {"name":"Arthas", "surname":"Menethil", "group":"group1", "phone":"123456789", "department":"department1", "course":["course1", "course2"]}
 
 
 //TODO
 
-// 4. usunięcie grupy usuwa także tę grupę u każdego pracownika będącego w niej.
+// 4. usunięcie departamentu usuwa także ten departament u każdego pracownika będącego w niej.
 // 5. edycja nazwy grupy zmienia nazwę także u pracowników
-// 7. usunięcie departamentu możliwe tylko, jeśli nie posiada on pracowników. 
+// 7. usunięcie grupy możliwe tylko, jeśli nie posiada on pracowników. 
 // 8. zmiana departamentu edytuje też departament u pracowników, którzy w nim byli
 // 9. edycja nazwy szkolenia zmienia nazwę danego szkolenia u pracowników
 
-// 11. crud pracowników
 // 12. raporty
 
-// 13. dodać if(req.body.wartosc == null) { wartoscNowa = wartoscStara } do Editów?
+// 14.
 
 const configJson =  JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'))
 const secret = configJson.secret
-const employeeFilePath = configJson.employeeData
+const employeeFilePath = configJson.employeePath
 const userFilePath = configJson.userPath
 const departmentFilePath = configJson.departmentPath
 const courseFilePath = configJson.coursePath

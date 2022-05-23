@@ -9,6 +9,7 @@ import {Department} from "../models/DepartmentModel"
 import {Course} from "../models/CourseModel"
 import {courseFilePath, departmentFilePath, employeeFilePath, groupFilePath, secret} from "../index"
 import {addObjToFile, deleteObjById, getObjById, getAllObjs, editObj, checkIfEmployeeExists, getGrpByName, getDepByName, getCrsByName} from "../globalFunctions"
+import { isImportEqualsDeclaration } from 'typescript'
 
 
 export function createEmployee(req: Request, res: Response) {
@@ -33,13 +34,19 @@ export function createEmployee(req: Request, res: Response) {
     let acceptedDepartmentName: string
     let acceptedGroupName: string
 
-    for (let i = 0; i < courseNames.length; i++) {
-        let actualCourse = courseNames[i]
-        if (courseArray.some(c => c.courseName === actualCourse) == true) {
-            acceptedCourseNames.push(actualCourse)
-        }else{
-            result+= actualCourse + " cannot be added, since it's not a course. "
+    if(Array.isArray(courseNames)){
+        for (let i = 0; i < courseNames.length; i++) {
+            let actualCourse = courseNames[i]
+            console.log(courseArray.length)
+            console.log("actual from array: " + actualCourse)
+            if (courseArray.some(c => c.courseName === actualCourse) == true) {
+                acceptedCourseNames.push(actualCourse)
+            }else{
+                result+= actualCourse + " cannot be added, since it's not a course. "
+            }
         }
+    }else if(courseNames != "" || courseNames != null || courseNames != undefined){
+        result+= " Course must be added as an array! " 
     }
 
     if(departmentArray.some(d => d.departmentName === departmentName) == true) {
@@ -161,13 +168,17 @@ export function editEmployee(req: Request, res: Response){
     let acceptedDepartmentName: string
     let acceptedGroupName: string
 
-    for (let i = 0; i < courseNames.length; i++) {
-        let actualCourse = courseNames[i]
-        if (courseArray.some(c => c.courseName === actualCourse) == true) {
-            acceptedCourseNames.push(actualCourse)
-        }else{
-            result+= actualCourse + " cannot be added, since it's not a course. "
+    if(Array.isArray(courseNames)){
+        for (let i = 0; i < courseNames.length; i++) {
+            let actualCourse = courseNames[i]
+            if (courseArray.some(c => c.courseName === actualCourse) == true) {
+                acceptedCourseNames.push(actualCourse)
+            }else{
+                result+= actualCourse + " cannot be added, since it's not a course. "
+            }
         }
+    }else if(courseNames != "" || courseNames != null || courseNames != undefined){
+        result+= " Course must be added as an array! " 
     }
 
     if(departmentArray.some(d => d.departmentName === departmentName) == true) {
@@ -189,7 +200,7 @@ export function editEmployee(req: Request, res: Response){
     if(acceptedDepartmentName != ""){
         acceptedDepartment = getDepByName(acceptedDepartmentName, departmentFilePath)
     }else{
-        acceptedDepartment = req.body.departament
+        acceptedDepartment = employee.department
     }
 
     if(acceptedGroupName != ""){
@@ -202,11 +213,37 @@ export function editEmployee(req: Request, res: Response){
         acceptedCourses = getCrsByName(acceptedCourseNames, courseFilePath)
 
     }else{
-        acceptedCourses = req.body.departament
+        acceptedCourses = employee.course
     }
 
     if(employee != null){
-        let newEmployee = new Employee(employee.id, req.body.name, req.body.surname, acceptedGroup, employee.joiningDate, req.body.phone, acceptedDepartment, acceptedCourses)
+
+        let empName: string
+        let empSurname: string
+        let empPhone: string
+
+        if(req.body.name == null || req.body.name == "" || req.body.name == undefined){
+            empName = employee.name
+        }else{
+            empName = req.body.name
+        }
+
+        if(req.body.surname == null || req.body.surname == "" || req.body.surname == undefined){
+            empSurname = employee.surname
+        }else{
+            empSurname = req.body.surname
+        }
+
+        if(req.body.phone == null || req.body.phone == "" || req.body.phone == undefined){
+            empPhone = req.body.phone
+        }else{
+            empPhone = req.body.phone
+        }
+
+
+
+
+        let newEmployee = new Employee(employee.id, empName, empSurname, acceptedGroup, employee.joiningDate, empPhone, acceptedDepartment, acceptedCourses)
 
         editObj(employeeFilePath, employee.id, newEmployee)
         result += "Done. "
