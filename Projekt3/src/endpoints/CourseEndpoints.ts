@@ -97,9 +97,10 @@ export function editCourse(req: Request, res: Response){
             const employeesArray: Employee[] = getAllObjs(employeeFilePath)
 
             for(let i = 0; i < employeesArray.length; i++){
+               
                 for(let j = 0; j < employeesArray[i].course.length; j++){
                     if(employeesArray[i].course[j].courseName == course.courseName){
-                        employeesArray[i].course[j].courseName = newCourse.courseName
+                        employeesArray[i].course[j] = newCourse 
                         editObj(employeeFilePath, employeesArray[i].id, employeesArray[i])
                     }
                 }

@@ -40,6 +40,20 @@ export function deleteDepartment(req: Request, res: Response){
     const department = getObjById(departmentFilePath, departmentId)
     if(department != null){
         deleteResult = deleteObjById(departmentFilePath, departmentId)
+        const generatedId = Date.now()
+        const employeesArray: Employee[] = getAllObjs(employeeFilePath)
+
+        for(let i = 0; i < employeesArray.length; i++){
+            if(employeesArray[i].department?.id == department.id){
+                
+                let newDepartment: Department = new Department(generatedId, "", "", "")
+                employeesArray[i].department = newDepartment
+                editObj(employeeFilePath, employeesArray[i].id, employeesArray[i])
+            }
+        }
+
+        
+
     }else{
         deleteResult = "Couldn't find a department with that id."   
     }   
@@ -98,8 +112,8 @@ export function editDepartment(req: Request, res: Response){
             const employeesArray: Employee[] = getAllObjs(employeeFilePath)
 
             for(let i = 0; i < employeesArray.length; i++){
-                if(employeesArray[i].department.departmentName == department.departmentName){
-                    employeesArray[i].department.departmentName = newDepartment.departmentName
+                if(employeesArray[i].department?.departmentName == department.departmentName){
+                    employeesArray[i].department = newDepartment
                     editObj(employeeFilePath, employeesArray[i].id, employeesArray[i])
                 }
                 

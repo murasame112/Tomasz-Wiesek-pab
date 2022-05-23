@@ -87,7 +87,7 @@ export function createEmployee(req: Request, res: Response) {
     if(acceptedGroupName == null || acceptedGroupName == "" || acceptedGroup.groupName == ""){
         result += "Employee has to be in a group! "
     }else{
-        const employee = new Employee(generatedId, req.body.name, req.body.surname, acceptedGroup, stringDate, req.body.phone, acceptedDepartment, acceptedCourses)
+        const employee = new Employee(generatedId, req.body.name, req.body.surname, acceptedGroup, stringDate, req.body.phone, acceptedCourses, acceptedDepartment)
         result += "Done. "
         addObjToFile(employee, employeeFilePath)
     }
@@ -127,7 +127,7 @@ export function getEmployee(req: Request, res: Response){
          <p>id: ${employee.id}</p><br>
          <p>department: ${employee.department?.departmentName}</p><br>
          <p>group: ${employee.group.groupName}</p><br>
-         <p>courses: ${employee.course?.map((crs: Course) => crs.courseName + ", ").join('')}</p><br>
+         <p>courses: ${employee.course.map((crs: Course) => crs.courseName + ", ").join('')}</p><br>
          <p>joining date: ${employee.joiningDate}</p><br>
          <p>phone: ${employee.phone}</p><br>`
         ).join('')
@@ -243,7 +243,7 @@ export function editEmployee(req: Request, res: Response){
 
 
 
-        let newEmployee = new Employee(employee.id, empName, empSurname, acceptedGroup, employee.joiningDate, empPhone, acceptedDepartment, acceptedCourses)
+        let newEmployee = new Employee(employee.id, empName, empSurname, acceptedGroup, employee.joiningDate, empPhone, acceptedCourses, acceptedDepartment)
 
         editObj(employeeFilePath, employee.id, newEmployee)
         result += "Done. "

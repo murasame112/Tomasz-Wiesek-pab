@@ -7,13 +7,13 @@ export class Employee{
     name: string
     surname: string
     department?: Department
-    course?: Course[]
+    course: Course[]
     group: Group
     joiningDate: string
     phone: string
 
 
-    constructor(id: number, name: string, surname: string, group: Group, joiningDate: string, phone: string, department?: Department, course?: Course[]) {
+    constructor(id: number, name: string, surname: string, group: Group, joiningDate: string, phone: string, course: Course[], department?: Department) {
         this.id = id
         this.name = name
         this.surname = surname

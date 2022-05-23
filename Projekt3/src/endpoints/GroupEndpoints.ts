@@ -34,11 +34,27 @@ export function deleteGroup(req: Request, res: Response){
     const token = authData?.split(' ')[1] ?? ''
     const payload = jwt.verify(token, secret)
 
+    let employeeCounter = 0
+
     let deleteResult: string
     const groupId = parseInt(req.params.id, 10)
     const group = getObjById(groupFilePath, groupId)
     if(group != null){
-        deleteResult = deleteObjById(groupFilePath, groupId)
+
+        const employeesArray: Employee[] = getAllObjs(employeeFilePath)
+
+        for(let i = 0; i < employeesArray.length; i++){
+            if(employeesArray[i].group.groupName == group.groupName){
+                employeeCounter++
+            }
+        }
+
+        if(employeeCounter == 0){
+            deleteResult = deleteObjById(groupFilePath, groupId)
+        }else{
+            deleteResult = "You have to delete " + employeeCounter + " employees from this group before deleting it!"
+        }
+        
     }else{
         deleteResult = "Couldn't find a group with that id."   
     }   
