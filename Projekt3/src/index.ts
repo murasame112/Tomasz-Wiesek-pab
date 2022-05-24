@@ -95,6 +95,7 @@ app.put('/course/:id', CourseEndpoints.editCourse)
 app.post('/employee', EmployeeEndpoints.createEmployee)
 app.delete('/employee/:id', EmployeeEndpoints.deleteEmployee)
 app.get('/employee', EmployeeEndpoints.getEmployee)
+app.get('/employeePoints', EmployeeEndpoints.employeePointsReport)
 app.get('/employeeCourses/:id', EmployeeEndpoints.employeeCourseReport)
 app.put('/employee/:id', EmployeeEndpoints.editEmployee) 
 
