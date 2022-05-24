@@ -168,6 +168,44 @@ export function employeeCourseReport(req: Request, res: Response){
     res.send(result)
 }
 
+export function employeePointsReport(req: Request, res: Response){
+    const authData = req.headers.authorization
+    const token = authData?.split(' ')[1] ?? ''
+    const payload = jwt.verify(token, secret)
+
+    const employees = getAllObjs(employeeFilePath)
+    let result: string = ""
+    let points: number = 0
+
+    if(Array.isArray(employees)){
+        for(let i = 0; i < employees.length; i++){
+            points = 0
+    
+            for(let j = 0; j < employees[i].course.length; j++){
+                points += employees[i].course[j].points
+            }
+    
+            result = 
+             `<h1>name: ${employees[i].name}</h1><br>
+             <p>surname: ${employees[i].surname}</p><br>
+             <p>points: ${points}</p><br>`
+        }
+    }else{
+        points = 0
+    
+        for(let j = 0; j < employees.course.length; j++){
+            points += employees.course[j].points
+        }
+    
+            result = 
+             `<h1>name: ${employees.name}</h1><br>
+             <p>surname: ${employees.surname}</p><br>
+             <p>points: ${points}</p><br>`
+        
+    }
+    res.send(result)
+}
+
 export function editEmployee(req: Request, res: Response){
     const authData = req.headers.authorization
     const token = authData?.split(' ')[1] ?? ''

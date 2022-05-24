@@ -45,7 +45,7 @@ app.use(express.json())
 // 9.++++ edycja nazwy szkolenia zmienia nazwę danego szkolenia u pracowników 
 
 
-// 12. raporty (zostal tylko raport pracownikow)
+// 12.++++ raporty 
 
 // 14. testy 4, 5, 7, 8, 9
 // 15. testy raportów po skonczeniu.
