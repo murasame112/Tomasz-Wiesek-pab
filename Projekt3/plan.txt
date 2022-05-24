@@ -37,9 +37,3 @@ Szkolenie:
 Grupa:
 	- id
 	- nazwa
-
-================================== dodatkowe notatki ==================================
-
-sumowanie punktów wszystkich pracowników -> obliczenie z tego średniej -> jeśli jakiś pracownik ma więcej (albo dużo więcej) niż średnia, to jest na zielono
-
-

@@ -65,7 +65,6 @@ app.put('/group/:id', GroupEndpoints.editGroup)
 app.post('/department', DepartmentEndpoints.createDepartment)
 app.delete('/department/:id', DepartmentEndpoints.deleteDepartment)
 app.get('/department', DepartmentEndpoints.getDepartment)
-app.get('/departmentReport', DepartmentEndpoints.departmentEmployeeReport)
 app.put('/department/:id', DepartmentEndpoints.editDepartment) 
 
 // ============== COURSE ENDPOINTS ==============
@@ -80,10 +79,11 @@ app.put('/course/:id', CourseEndpoints.editCourse)
 app.post('/employee', EmployeeEndpoints.createEmployee)
 app.delete('/employee/:id', EmployeeEndpoints.deleteEmployee)
 app.get('/employee', EmployeeEndpoints.getEmployee)
-app.get('/employeePoints', EmployeeEndpoints.employeePointsReport)
-app.get('/employeeCourses/:id', EmployeeEndpoints.employeeCourseReport)
 app.put('/employee/:id', EmployeeEndpoints.editEmployee) 
 
-
+// ============== REPORTS ==============
+app.get('/employeePoints', EmployeeEndpoints.employeePointsReport)
+app.get('/employeeCourses/:id', EmployeeEndpoints.employeeCourseReport)
+app.get('/departmentReport', DepartmentEndpoints.departmentEmployeeReport)
 
 app.listen(3000)
