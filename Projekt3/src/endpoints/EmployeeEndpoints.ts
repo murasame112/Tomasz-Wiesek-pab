@@ -176,17 +176,31 @@ export function employeePointsReport(req: Request, res: Response){
     const employees = getAllObjs(employeeFilePath)
     let result: string = ""
     let points: number = 0
+    let avg: number = 0
+    let overallPoints: number = 0
 
     if(Array.isArray(employees)){
+
+        for(let i = 0; i < employees.length; i++){
+            for(let j = 0; j < employees[i].course.length; j++){
+                overallPoints += employees[i].course[j].points
+            }
+        }
+        avg = overallPoints/employees.length
+
         for(let i = 0; i < employees.length; i++){
             points = 0
-    
+            
             for(let j = 0; j < employees[i].course.length; j++){
                 points += employees[i].course[j].points
             }
     
-            result = 
-             `<h1>name: ${employees[i].name}</h1><br>
+            if(points >= avg) {
+                result +=  `<h1 style="color:green;">`
+            }else{
+                result += `<h1>`
+            }
+             result+= `name: ${employees[i].name}</h1><br>
              <p>surname: ${employees[i].surname}</p><br>
              <p>points: ${points}</p><br>`
         }

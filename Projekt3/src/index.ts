@@ -38,17 +38,10 @@ app.use(express.json())
 
 //TODO
 
-// 4.++++ usunięcie departamentu usuwa także ten departament u każdego pracownika będącego w nim.
-// 5.++++ edycja nazwy grupy zmienia nazwę także u pracowników
-// 7.++++ usunięcie grupy możliwe tylko, jeśli nie posiada ona pracowników. 
-// 8.++++ zmiana departamentu edytuje też departament u pracowników, którzy w nim byli
-// 9.++++ edycja nazwy szkolenia zmienia nazwę danego szkolenia u pracowników 
-
-
 // 12.++++ raporty 
 
-// 14. testy 4, 5, 7, 8, 9
 // 15. testy raportów po skonczeniu.
+// 16. testy edycji pracowników 
 
 const configJson =  JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'))
 const secret = configJson.secret
