@@ -35,11 +35,6 @@ app.use(express.json())
 // employee:
 // {"name":"Arthas", "surname":"Menethil", "group":"group1", "phone":"123456789", "course":["course1", "course2"], "department":"department1"}
 
-
-//TODO
-
-// 16. testy edycji pracowników 
-
 const configJson =  JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'))
 const secret = configJson.secret
 const employeeFilePath = configJson.employeePath
