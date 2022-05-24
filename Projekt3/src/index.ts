@@ -38,9 +38,6 @@ app.use(express.json())
 
 //TODO
 
-// 12.++++ raporty 
-
-// 15. testy raportów po skonczeniu.
 // 16. testy edycji pracowników 
 
 const configJson =  JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'))

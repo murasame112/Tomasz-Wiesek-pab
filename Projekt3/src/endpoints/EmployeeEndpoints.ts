@@ -37,8 +37,6 @@ export function createEmployee(req: Request, res: Response) {
     if(Array.isArray(courseNames)){
         for (let i = 0; i < courseNames.length; i++) {
             let actualCourse = courseNames[i]
-            console.log(courseArray.length)
-            console.log("actual from array: " + actualCourse)
             if (courseArray.some(c => c.courseName === actualCourse) == true) {
                 acceptedCourseNames.push(actualCourse)
             }else{

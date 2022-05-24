@@ -102,17 +102,18 @@ export function departmentEmployeeReport(req: Request, res: Response){
     
 
     if(Array.isArray(departments)){
-        let empCounter = 0
+        
         for(let i = 0; i < departments.length; i++){
-            for(let j = 0; j < employees.length; j++){
-                if(departments[i].departamentName == employees[j].departament.departamentName){
+            let empCounter = 0
+            for(let j = 0; j < employees.length; j++){               
+                if(departments[i].departmentName == employees[j].department.departmentName){
                     empCounter++
                 } 
             }
 
-            result = 
-            `<h1>Department name: ${departments[i].departmentName}</h1><br>
-            <p>Employees: ${empCounter}</p><br>
+            result += 
+            `<h1>Department name: ${departments[i].departmentName}</h1>
+            <p>Employees: ${empCounter}</p><br><br>
             `
         }
     }else{
